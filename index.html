@@ -252,8 +252,54 @@ function parseStatsCsv(text){
     }
   }
   if (average === null || distribution.length === 0) return null;
-  // Sheet stores buckets high-to-low; display low-to-high (left = low score).
+  // Sheet stores buckets high-to-low; internal order is low-to-high (left = low score).
   distribution.reverse();
+  return { average, distribution };
+}
+
+const BUCKETS = ["60以下","60-69","70-79","80-84","85-89","90-94","95-99","100"];
+function bucketFor(score){
+  if (score >= 100) return "100";
+  if (score >= 95) return "95-99";
+  if (score >= 90) return "90-94";
+  if (score >= 85) return "85-89";
+  if (score >= 80) return "80-84";
+  if (score >= 70) return "70-79";
+  if (score >= 60) return "60-69";
+  return "60以下";
+}
+
+// Fallback: no pre-built stats tab yet — read the raw roster (座號 / 姓名 / 1-1 …)
+// and compute the distribution and average ourselves.
+function parseRosterCsv(text){
+  const parsed = Papa.parse(text.trim(), { skipEmptyLines: false });
+  const rows = parsed.data;
+  let headerIdx = -1, scoreCol = -1;
+  for (let i = 0; i < rows.length; i++){
+    const row = rows[i];
+    if (!row || (row[0] || "").toString().trim() !== "座號") continue;
+    const idx = row.findIndex(cell => (cell || "").toString().trim() === "1-1");
+    if (idx !== -1){ headerIdx = i; scoreCol = idx; break; }
+  }
+  if (headerIdx === -1) return null;
+
+  const scores = [];
+  for (let i = headerIdx + 1; i < rows.length; i++){
+    const row = rows[i];
+    if (!row) break;
+    const seatRaw = (row[0] || "").toString().trim();
+    if (!/^\d+$/.test(seatRaw)) break;
+    const scoreRaw = (row[scoreCol] || "").toString().trim();
+    if (scoreRaw !== "" && !isNaN(parseFloat(scoreRaw))){
+      scores.push(parseFloat(scoreRaw));
+    }
+  }
+  if (scores.length === 0) return null;
+
+  const counts = Object.fromEntries(BUCKETS.map(b => [b, 0]));
+  scores.forEach(s => counts[bucketFor(s)]++);
+  const distribution = BUCKETS.map(b => ({ label: b, count: counts[b] }));
+  const average = scores.reduce((a, b) => a + b, 0) / scores.length;
   return { average, distribution };
 }
 
@@ -262,7 +308,7 @@ async function loadClass(c){
     const res = await fetch(csvUrl(SHEETS[c]), { cache: "no-store" });
     if (!res.ok) throw new Error("fetch failed");
     const text = await res.text();
-    const parsed = parseStatsCsv(text);
+    const parsed = parseStatsCsv(text) || parseRosterCsv(text);
     if (!parsed){
       STATE[c] = { status: "empty" };
     } else {
