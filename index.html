@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>五年級小考成績總覽</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <style>
   :root{
     --paper:#EEF2ED;
@@ -33,7 +34,7 @@
   }
   .wrap{max-width:920px;margin:0 auto;padding:36px 20px 80px;}
 
-  header{margin-bottom:28px;}
+  header{margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
   .eyebrow{
     display:inline-block;
     font-size:13px;
@@ -51,6 +52,15 @@
     letter-spacing:0.5px;
   }
   header p{margin:0;color:var(--ink-soft);font-size:14.5px;}
+
+  .refresh-note{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    border:1.5px dashed #B9C2B7;
+    border-radius:8px;
+    padding:8px 12px;
+    max-width:220px;
+  }
 
   nav.tabs{
     display:flex;
@@ -85,6 +95,7 @@
   }
   nav.tabs button .dot.filled{background:var(--sage);}
   nav.tabs button .dot.empty{background:transparent;border:1.5px solid #B9C2B7;}
+  nav.tabs button .dot.error{background:var(--pen-red);}
 
   .panel{
     background:var(--card);
@@ -146,9 +157,7 @@
   table caption{text-align:left;font-size:14px;color:var(--ink-soft);font-weight:700;margin-bottom:10px;}
   th,td{padding:7px 8px;text-align:center;border-bottom:1px solid var(--paper-line);}
   th{color:var(--ink-soft);font-weight:700;font-size:12.5px;}
-  td.name{text-align:left;}
   td.score{font-weight:700;}
-  td.absent{color:#AEB7AC;font-style:italic;}
 
   .empty{
     text-align:center;
@@ -163,6 +172,7 @@
     font-size:26px;
     transform:rotate(-3deg);
   }
+  .empty .icon.error{border-color:var(--pen-red-soft);color:var(--pen-red);}
   .empty p{margin:4px 0;font-size:14.5px;}
   .empty .small{font-size:12.5px;color:#9AA69A;}
 
@@ -181,70 +191,97 @@
 <div class="wrap">
 
   <header>
-    <span class="eyebrow">小考成績紀錄</span>
-    <h1>五年級成績總覽</h1>
-    <p>506 · 507 · 508 · 509 · 510　各班分數級距、平均分數統計</p>
+    <div>
+      <span class="eyebrow">小考成績紀錄</span>
+      <h1>五年級成績總覽</h1>
+      <p>506 · 507 · 508 · 509 · 510　各班分數級距、平均分數統計</p>
+    </div>
+    <div class="refresh-note">資料即時讀取自 Google 試算表，重新整理網頁即可看到最新成績。</div>
   </header>
 
   <nav class="tabs" id="tabs"></nav>
   <section class="panel" id="panel"></section>
 
-  <footer>資料來源：各班小考成績登錄表</footer>
+  <footer>資料來源：各班小考成績登錄表（Google 試算表）</footer>
 </div>
 
 <script>
-const DATA = {
-  "506": { status: "empty" },
-  "507": { status: "empty" },
-  "508": { status: "empty" },
-  "509": { status: "empty" },
-  "510": {
-    status: "ready",
-    average: 76.08,
-    submitted: 25,
-    total: 27,
-    absentSeats: [6, 11],
-    distribution: [
-      { label: "60以下", count: 5 },
-      { label: "60-69", count: 2 },
-      { label: "70-79", count: 6 },
-      { label: "80-84", count: 3 },
-      { label: "85-89", count: 4 },
-      { label: "90-94", count: 2 },
-      { label: "95-99", count: 2 },
-      { label: "100",    count: 1 }
-    ],
-    students: [
-      {seat:1,name:"朱屹凡",score:74},{seat:2,name:"杜有杰",score:68},
-      {seat:3,name:"徐冠宥",score:88},{seat:4,name:"張萬鑫",score:86},
-      {seat:5,name:"葉佳叡",score:56},{seat:6,name:"田恩睿",score:null},
-      {seat:7,name:"張宸緁",score:84},{seat:8,name:"莊仁傑",score:88},
-      {seat:9,name:"陳裕緯",score:76},{seat:10,name:"王允泓",score:88},
-      {seat:11,name:"歐與光",score:null},{seat:12,name:"陳宥言",score:100},
-      {seat:13,name:"范祐鎧",score:78},{seat:14,name:"李浚睿",score:80},
-      {seat:15,name:"林筠扉",score:96},{seat:16,name:"羅御瑄",score:56},
-      {seat:17,name:"李凱莉",score:72},{seat:18,name:"鄭琹云",score:96},
-      {seat:19,name:"黃楷樂",score:72},{seat:20,name:"錢忻菲",score:54},
-      {seat:21,name:"卓芮巧",score:82},{seat:22,name:"何依諦",score:90},
-      {seat:23,name:"蕭歆芸",score:92},{seat:24,name:"盧玟慈",score:48},
-      {seat:25,name:"張宸菲",score:72},{seat:26,name:"黃亮恩",score:46},
-      {seat:27,name:"劉霈青",score:60}
-    ]
-  }
+// Each class's Google Sheet file ID. The first tab (left-most) of each
+// spreadsheet is read — for classes where the teacher has added a
+// "級距統計" style first tab (distribution rows + a 平均分數 row), the
+// numbers are parsed straight from it. Classes without that tab yet show
+// as "尚未登錄成績".
+const SHEETS = {
+  "506": "1cVKZhT1VVkY6YyRpIoQgV2VLWB5bSGbjxzyfMANr6_U",
+  "507": "1tSYPfo_XuHjV4YP5FnE7f8PtL7AmpwNwE3T50yKvfzU",
+  "508": "1ivtw3RfcXy0svcfrPV_7agerNlRMq4TJOO3S60fhTiU",
+  "509": "1UIv5L5CrNQEEtUrN4jgYN_iC8rbO9VTjEp8EmWx2_-o",
+  "510": "19fwrgcsWUbxeMnB1KRBcEMu4z5xNM5cpVGMqbkgflc4"
 };
 
-const classes = ["506","507","508","509","510"];
+const classes = Object.keys(SHEETS);
 let current = "510";
 let chartInstance = null;
+const STATE = {}; // classCode -> { status: 'loading'|'ready'|'empty'|'error', average, distribution }
 
-const tabsEl = document.getElementById("tabs");
-const panelEl = document.getElementById("panel");
+classes.forEach(c => STATE[c] = { status: "loading" });
+
+function csvUrl(fileId){
+  return `https://docs.google.com/spreadsheets/d/${fileId}/gviz/tq?tqx=out:csv`;
+}
+
+function parseStatsCsv(text){
+  const parsed = Papa.parse(text.trim(), { skipEmptyLines: false });
+  const rows = parsed.data;
+  let average = null;
+  const distribution = [];
+  for (const row of rows){
+    if (!row || row.length < 2) continue;
+    const label = (row[0] || "").toString().trim();
+    const raw = (row[1] || "").toString().trim();
+    if (!label) continue;
+    if (label === "平均分數"){
+      const v = parseFloat(raw);
+      if (!isNaN(v)) average = v;
+      continue;
+    }
+    const looksLikeBucket = /^\d+$/.test(label) || /^\d+-\d+$/.test(label) || label.includes("以下") || label.includes("以上");
+    const count = parseInt(raw, 10);
+    if (looksLikeBucket && !isNaN(count)){
+      distribution.push({ label, count });
+    }
+  }
+  if (average === null || distribution.length === 0) return null;
+  // Sheet stores buckets high-to-low; display low-to-high (left = low score).
+  distribution.reverse();
+  return { average, distribution };
+}
+
+async function loadClass(c){
+  try {
+    const res = await fetch(csvUrl(SHEETS[c]), { cache: "no-store" });
+    if (!res.ok) throw new Error("fetch failed");
+    const text = await res.text();
+    const parsed = parseStatsCsv(text);
+    if (!parsed){
+      STATE[c] = { status: "empty" };
+    } else {
+      STATE[c] = { status: "ready", average: parsed.average, distribution: parsed.distribution };
+    }
+  } catch (e){
+    STATE[c] = { status: "error" };
+  }
+  renderTabs();
+  if (c === current) renderPanel();
+}
 
 function renderTabs(){
+  const tabsEl = document.getElementById("tabs");
   tabsEl.innerHTML = classes.map(c => {
-    const ready = DATA[c].status === "ready";
+    const s = STATE[c].status;
+    const dotClass = s === "ready" ? "filled" : (s === "error" ? "error" : "empty");
     return `<button data-c="${c}" class="${c===current?'active':''}">
-      <span class="dot ${ready?'filled':'empty'}"></span>${c} 班
+      <span class="dot ${dotClass}"></span>${c} 班
     </button>`;
   }).join("");
   tabsEl.querySelectorAll("button").forEach(b=>{
@@ -253,34 +290,52 @@ function renderTabs(){
 }
 
 function renderPanel(){
-  const d = DATA[current];
+  const panelEl = document.getElementById("panel");
+  const d = STATE[current];
 
   if (chartInstance){ chartInstance.destroy(); chartInstance = null; }
 
-  if (d.status !== "ready"){
+  if (d.status === "loading"){
     panelEl.innerHTML = `
-      <div class="panel-head">
-        <div>
-          <h2>${current} 班</h2>
-          <div class="sub">尚未登錄成績</div>
-        </div>
+      <div class="panel-head"><div><h2>${current} 班</h2><div class="sub">讀取中…</div></div></div>
+      <div class="empty"><div class="icon">…</div><p>正在從試算表讀取最新成績。</p></div>
+    `;
+    return;
+  }
+
+  if (d.status === "error"){
+    panelEl.innerHTML = `
+      <div class="panel-head"><div><h2>${current} 班</h2><div class="sub">讀取失敗</div></div></div>
+      <div class="empty">
+        <div class="icon error">!</div>
+        <p>沒辦法讀取這個班級的試算表。</p>
+        <p class="small">請確認該試算表的共用設定是「知道連結的人可以檢視」。</p>
       </div>
+    `;
+    return;
+  }
+
+  if (d.status === "empty"){
+    panelEl.innerHTML = `
+      <div class="panel-head"><div><h2>${current} 班</h2><div class="sub">尚未登錄成績</div></div></div>
       <div class="empty">
         <div class="icon">?</div>
-        <p>這個班級還沒有小考成績資料。</p>
+        <p>這個班級還沒有小考成績統計資料。</p>
         <p class="small">登錄後，這裡會自動出現分數級距、平均分數與統計圖表。</p>
       </div>
     `;
     return;
   }
 
-  const submittedCount = d.students.filter(s => s.score !== null).length;
+  const submittedCount = d.distribution.reduce((sum, x) => sum + x.count, 0);
+  const topCount = d.distribution.find(x => x.label === "100")?.count ?? 0;
+  const belowCount = d.distribution.find(x => x.label.includes("以下"))?.count ?? 0;
 
   panelEl.innerHTML = `
     <div class="panel-head">
       <div>
         <h2>${current} 班</h2>
-        <div class="sub">1-1 小考 · 共 ${d.total} 人 · 已收 ${submittedCount} 份 · 缺考 ${d.absentSeats.length} 人（座號 ${d.absentSeats.join("、")}）</div>
+        <div class="sub">1-1 小考 · 已收 ${submittedCount} 份</div>
       </div>
       <div class="grade-stamp">
         <div class="num">${d.average}</div>
@@ -290,8 +345,8 @@ function renderPanel(){
 
     <div class="stat-row">
       <div class="stat-box"><div class="v">${d.average}</div><div class="k">平均分數</div></div>
-      <div class="stat-box"><div class="v">${d.distribution.find(x=>x.label==="100")?.count ?? 0}</div><div class="k">滿分人數</div></div>
-      <div class="stat-box"><div class="v">${d.distribution.find(x=>x.label==="60以下")?.count ?? 0}</div><div class="k">60分以下</div></div>
+      <div class="stat-box"><div class="v">${topCount}</div><div class="k">滿分人數</div></div>
+      <div class="stat-box"><div class="v">${belowCount}</div><div class="k">60分以下</div></div>
       <div class="stat-box"><div class="v">${submittedCount}</div><div class="k">實際應試人數</div></div>
     </div>
 
@@ -340,6 +395,7 @@ function renderPanel(){
 
 renderTabs();
 renderPanel();
+classes.forEach(loadClass);
 </script>
 </body>
 </html>
