@@ -21,14 +21,13 @@
   *{box-sizing:border-box;}
   body{
     margin:0;
-    background-color:var(--paper);
+    background-color:transparent;
     background-image: radial-gradient(rgba(0,0,0,0.06) 1.6px, transparent 1.6px);
     background-size: 22px 22px;
     color:var(--ink);
     font-family: "Microsoft JhengHei","PingFang TC","Noto Sans TC",-apple-system,sans-serif;
     line-height:1.5;
     min-height:100vh;
-    transition: background-color 0.6s ease;
   }
   .wrap{max-width:980px;margin:0 auto;padding:36px 20px 80px;}
 
@@ -133,6 +132,25 @@
 
   .empty-state{text-align:center;padding:60px 20px;color:var(--ink-soft);}
 
+  #sceneLayer{
+    position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;
+    transition:background 0.8s ease;
+  }
+  #sceneLayer .scene-ground{
+    position:absolute;left:0;right:0;bottom:0;height:38%;
+    border-radius:50% 50% 0 0 / 100% 100% 0 0;
+    transform:scaleX(1.4);
+    transition:background-color 0.8s ease;
+  }
+  #sceneLayer .scene-emoji{
+    position:absolute;right:-2vw;bottom:2vh;font-size:34vw;line-height:1;
+    opacity:0.14;filter:grayscale(15%);user-select:none;
+    transition:opacity 0.8s ease;
+  }
+  @media (max-width:560px){
+    #sceneLayer .scene-emoji{font-size:60vw;}
+  }
+
   .era-banner{
     display:flex;align-items:center;gap:16px;background:var(--card);
     border-radius:20px;padding:16px 20px;margin-bottom:18px;
@@ -156,6 +174,7 @@
 </style>
 </head>
 <body>
+<div id="sceneLayer"><div class="scene-ground" id="sceneGround"></div><div class="scene-emoji" id="sceneEmoji"></div></div>
 <div class="wrap">
 
   <header>
@@ -234,6 +253,26 @@ function eraForScore(score){
 function applyEraBackground(score){
   const { era } = eraForScore(score);
   document.documentElement.style.setProperty('--paper', era.bg);
+  const layer = document.getElementById('sceneLayer');
+  const ground = document.getElementById('sceneGround');
+  const emojiEl = document.getElementById('sceneEmoji');
+  if (layer){
+    layer.style.background = `linear-gradient(180deg, ${lighten(era.bg, 10)} 0%, ${era.bg} 70%)`;
+  }
+  if (ground){
+    ground.style.backgroundColor = era.accent;
+    ground.style.opacity = "0.10";
+  }
+  if (emojiEl){
+    emojiEl.textContent = era.emoji;
+  }
+}
+function lighten(hex, amt){
+  const n = parseInt(hex.replace('#',''), 16);
+  const r = Math.min(255, (n >> 16) + amt);
+  const g = Math.min(255, ((n >> 8) & 0xff) + amt);
+  const b = Math.min(255, (n & 0xff) + amt);
+  return `rgb(${r},${g},${b})`;
 }
 
 function statusText(msg){ document.getElementById("statusText").textContent = msg; }
