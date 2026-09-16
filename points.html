@@ -194,8 +194,22 @@ async function loadState(){
   renderPanel();
 }
 
-async function postRecord(student, category){
+function postRecord(student, category){
+  // Optimistic update: show the new score immediately, don't wait on the
+  // network round trip (Apps Script latency is the bottleneck, not the UI).
+  const optimisticRecord = {
+    time: new Date().toISOString(),
+    className: student.className,
+    seat: student.seat,
+    name: student.name,
+    category: category.name,
+    points: category.points,
+    note: ""
+  };
+  STATE.records.push(optimisticRecord);
+  renderPanel();
   statusText("送出中…");
+
   const payload = {
     className: student.className,
     seat: student.seat,
@@ -203,15 +217,16 @@ async function postRecord(student, category){
     category: category.name,
     points: category.points
   };
-  try {
-    const res = await fetch(WEBAPP_URL, { method: "POST", body: JSON.stringify(payload) });
-    const data = await res.json();
-    STATE = data;
-    statusText("已更新：" + new Date().toLocaleTimeString("zh-TW"));
-  } catch(e){
-    statusText("送出失敗，請重試");
-  }
-  renderPanel();
+  fetch(WEBAPP_URL, { method: "POST", body: JSON.stringify(payload) })
+    .then(res => res.json())
+    .then(data => {
+      STATE = data; // reconcile with server's canonical state
+      statusText("已更新：" + new Date().toLocaleTimeString("zh-TW"));
+      renderPanel();
+    })
+    .catch(() => {
+      statusText("⚠️ 同步失敗，分數可能沒存到，請按重新整理確認");
+    });
 }
 
 function studentsInClass(cls){
@@ -345,19 +360,25 @@ document.getElementById("sortToggleBtn").addEventListener("click", (e) => {
   renderPanel();
 });
 
-document.getElementById("resetBtn").addEventListener("click", async () => {
+document.getElementById("resetBtn").addEventListener("click", () => {
   const ok = confirm(`確定要重置 ${current} 班全部學生的分數嗎？\n\n⚠️ 這會永久刪除這個班級「所有」加減分歷史紀錄，無法復原！`);
   if (!ok) return;
-  statusText("重置中…");
-  try {
-    const res = await fetch(WEBAPP_URL, { method: "POST", body: JSON.stringify({ action: "resetClass", className: current }) });
-    const data = await res.json();
-    STATE = data;
-    statusText("已重置：" + new Date().toLocaleTimeString("zh-TW"));
-  } catch(e){
-    statusText("重置失敗，請重試");
-  }
+
+  // Optimistic: clear this class's records locally right away.
+  STATE.records = STATE.records.filter(r => r.className !== current);
   renderPanel();
+  statusText("重置中…");
+
+  fetch(WEBAPP_URL, { method: "POST", body: JSON.stringify({ action: "resetClass", className: current }) })
+    .then(res => res.json())
+    .then(data => {
+      STATE = data;
+      statusText("已重置：" + new Date().toLocaleTimeString("zh-TW"));
+      renderPanel();
+    })
+    .catch(() => {
+      statusText("⚠️ 重置可能沒有完全同步，請按重新整理確認");
+    });
 });
 
 renderTabs();
