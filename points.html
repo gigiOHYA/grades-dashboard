@@ -218,28 +218,28 @@ let sortByRank = false;
 let STATE = { students: [], categories: [], records: [] };
 let loaded = false;
 
-// 20 eras, one every 50 class-wide points, prehistoric → AI.
+// 20 個台灣史前及歷史時代，每 50 班級積分一個階段，貼近五年級社會課本。
 const ERAS = [
-  { name:"史前時代",     emoji:"🦴", bg:"#EDE3D3", accent:"#8B7355" },
-  { name:"石器時代",     emoji:"🪨", bg:"#E2D9CB", accent:"#6E6259" },
-  { name:"農業時代",     emoji:"🌾", bg:"#EDE7B8", accent:"#A98B2E" },
-  { name:"青銅時代",     emoji:"🏺", bg:"#E3C9A0", accent:"#8C5B2E" },
-  { name:"鐵器時代",     emoji:"⚔️", bg:"#D8D3CE", accent:"#5A5854" },
-  { name:"古文明時代",   emoji:"🏛️", bg:"#E9DCC3", accent:"#B08D3F" },
-  { name:"城邦時代",     emoji:"🏰", bg:"#D9E3E8", accent:"#3E6E80" },
-  { name:"帝國時代",     emoji:"👑", bg:"#F1DDBE", accent:"#B8860B" },
-  { name:"中世紀",       emoji:"🛡️", bg:"#DCE0E6", accent:"#4A5568" },
-  { name:"大航海時代",   emoji:"⛵", bg:"#CDE7EF", accent:"#1F7A99" },
-  { name:"文藝復興",     emoji:"🎨", bg:"#F3DDE3", accent:"#B5456D" },
-  { name:"工業革命",     emoji:"⚙️", bg:"#DDD6CE", accent:"#6B5B4A" },
-  { name:"蒸汽時代",     emoji:"🚂", bg:"#E4D4C3", accent:"#7A4A2B" },
-  { name:"電力時代",     emoji:"💡", bg:"#FBEFC2", accent:"#C79B12" },
-  { name:"太空時代",     emoji:"🚀", bg:"#D6E0F5", accent:"#3355A8" },
-  { name:"電腦時代",     emoji:"🖥️", bg:"#D9EAE6", accent:"#1F7A5E" },
-  { name:"網路時代",     emoji:"🌐", bg:"#D3E6F7", accent:"#1B6FA8" },
-  { name:"智慧型手機時代", emoji:"📱", bg:"#E6D9F2", accent:"#6B3FA0" },
-  { name:"機器人時代",   emoji:"🤖", bg:"#DDE3EA", accent:"#3D5A73" },
-  { name:"AI 世代",      emoji:"✨", bg:"#E0F7FA", accent:"#0097A7" }
+  { name:"史前時代",       emoji:"🦴", bg:"#EDE3D3", accent:"#8B7355" },
+  { name:"新石器時代",     emoji:"🏺", bg:"#E2D9CB", accent:"#6E6259" },
+  { name:"南島原住民時代", emoji:"🛶", bg:"#E3EBD9", accent:"#5C8A4C" },
+  { name:"大航海時代",     emoji:"🗺️", bg:"#CDE7EF", accent:"#1F7A99" },
+  { name:"荷西時期",       emoji:"🏯", bg:"#F1DDBE", accent:"#B8860B" },
+  { name:"明鄭時期",       emoji:"⚔️", bg:"#D8D3CE", accent:"#5A5854" },
+  { name:"清領前期",       emoji:"🌾", bg:"#EDE7B8", accent:"#A98B2E" },
+  { name:"開港通商時期",   emoji:"⚓", bg:"#D3E3EC", accent:"#2E6E99" },
+  { name:"建省維新時期",   emoji:"🚂", bg:"#E4D4C3", accent:"#7A4A2B" },
+  { name:"日治前期",       emoji:"🏫", bg:"#E9E3D6", accent:"#8C6A3F" },
+  { name:"日治建設時期",   emoji:"🏗️", bg:"#DDD6CE", accent:"#6B5B4A" },
+  { name:"日治戰爭時期",   emoji:"🕊️", bg:"#E3E6E0", accent:"#6E7A6C" },
+  { name:"戰後初期",       emoji:"📜", bg:"#F1E6D3", accent:"#A9772E" },
+  { name:"遷台歲月",       emoji:"🚢", bg:"#D6E0F0", accent:"#3355A8" },
+  { name:"經濟起飛時代",   emoji:"🏭", bg:"#E6DCC8", accent:"#8A6A2E" },
+  { name:"民主化時代",     emoji:"🗳️", bg:"#F3DDE3", accent:"#B5456D" },
+  { name:"本土文化時代",   emoji:"🎭", bg:"#F0DCEA", accent:"#8B3F8C" },
+  { name:"科技產業時代",   emoji:"💻", bg:"#D9EAE6", accent:"#1F7A5E" },
+  { name:"智慧台灣時代",   emoji:"📱", bg:"#E6D9F2", accent:"#6B3FA0" },
+  { name:"AI 世代",        emoji:"✨", bg:"#E0F7FA", accent:"#0097A7" }
 ];
 const POINTS_PER_ERA = 50;
 
