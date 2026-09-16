@@ -347,7 +347,7 @@ document.getElementById("sortToggleBtn").addEventListener("click", (e) => {
 });
 
 document.getElementById("resetBtn").addEventListener("click", async () => {
-  const ok = confirm(`確定要重置 ${current} 班全部學生的分數嗎？\n\n這不會刪除歷史紀錄，只會補一筆歸零紀錄，把每個人的總分變回 0。`);
+  const ok = confirm(`確定要重置 ${current} 班全部學生的分數嗎？\n\n⚠️ 這會永久刪除這個班級「所有」加減分歷史紀錄，無法復原！`);
   if (!ok) return;
   statusText("重置中…");
   try {
