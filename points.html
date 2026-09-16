@@ -301,11 +301,10 @@ function openAddModal(cls, seat){
     </button>`;
   }).join("")}</div>`;
   body.querySelectorAll(".cat-btn").forEach(btn=>{
-    btn.addEventListener("click", async () => {
-      body.querySelectorAll(".cat-btn").forEach(b => b.disabled = true);
+    btn.addEventListener("click", () => {
       const cat = STATE.categories[parseInt(btn.dataset.i, 10)];
-      await postRecord(student, cat);
       closeModal();
+      postRecord(student, cat);
     });
   });
 }
