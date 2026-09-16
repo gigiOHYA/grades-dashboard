@@ -220,7 +220,6 @@ function renderPanel(){
 
   const submittedCount = d.distribution.reduce((sum, x) => sum + x.count, 0);
   const topCount = d.distribution.find(x => x.label === "100")?.count ?? 0;
-  const belowCount = d.distribution.find(x => x.label.includes("以下"))?.count ?? 0;
   const avgDisplay = d.average.toFixed(1);
 
   panelEl.innerHTML = `
@@ -238,7 +237,6 @@ function renderPanel(){
     <div class="stat-row">
       <div class="stat-box"><div class="v">${avgDisplay}</div><div class="k">平均分數</div></div>
       <div class="stat-box"><div class="v">${topCount}</div><div class="k">滿分人數</div></div>
-      <div class="stat-box"><div class="v">${belowCount}</div><div class="k">60分以下</div></div>
       <div class="stat-box"><div class="v">${submittedCount}</div><div class="k">實際應試人數</div></div>
     </div>
 
