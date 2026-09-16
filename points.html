@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>班級經營｜加減分</title>
+<style>
+  :root{
+    --paper:#EEF2ED;
+    --paper-line:#D3DCD2;
+    --ink:#1E2B27;
+    --ink-soft:#4B5A54;
+    --pen-red:#C4433B;
+    --pen-red-soft:#F3D9D6;
+    --sage:#5C8A78;
+    --sage-soft:#DCEAE2;
+    --card:#FBFAF6;
+    --gold:#D89A34;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background-color:var(--paper);
+    background-image:
+      linear-gradient(var(--paper-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--paper-line) 1px, transparent 1px);
+    background-size: 28px 28px;
+    color:var(--ink);
+    font-family: "Microsoft JhengHei","PingFang TC","Noto Sans TC",-apple-system,sans-serif;
+    line-height:1.5;
+    min-height:100vh;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:36px 20px 80px;}
+
+  header{margin-bottom:28px;}
+  .eyebrow{
+    display:inline-block;font-size:13px;color:var(--sage);
+    border:1.5px solid var(--sage);border-radius:3px;padding:2px 8px;
+    transform:rotate(-2deg);margin-bottom:10px;
+  }
+  h1{font-size:32px;margin:0 0 6px;font-weight:700;letter-spacing:0.5px;}
+  header p{margin:0;color:var(--ink-soft);font-size:14.5px;}
+
+  nav.tabs{display:flex;gap:6px;margin:26px 0 16px;border-bottom:2px solid var(--ink);flex-wrap:wrap;}
+  nav.tabs button{
+    font-family:inherit;font-size:16px;font-weight:700;background:transparent;
+    border:2px solid var(--ink);border-bottom:none;border-radius:8px 8px 0 0;
+    padding:9px 20px 8px;cursor:pointer;color:var(--ink-soft);position:relative;top:2px;
+  }
+  nav.tabs button.active{background:var(--card);color:var(--ink);top:2px;border-bottom:2px solid var(--card);}
+
+  .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;}
+  .toolbar .status{font-size:12.5px;color:var(--ink-soft);}
+  .toolbar .refresh{
+    font-family:inherit;font-size:13px;font-weight:700;background:var(--card);
+    border:1.5px solid var(--paper-line);border-radius:16px;padding:6px 14px;cursor:pointer;color:var(--ink-soft);
+  }
+
+  .panel{background:var(--card);border:2px solid var(--ink);border-radius:0 10px 10px 10px;padding:24px;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;}
+  .stu-card{
+    background:var(--paper);border:1.5px solid var(--paper-line);border-radius:10px;
+    padding:12px 12px 10px;position:relative;
+  }
+  .stu-card .rank{
+    position:absolute;top:-8px;left:-8px;width:22px;height:22px;border-radius:50%;
+    background:var(--gold);color:#fff;font-size:11px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;border:2px solid var(--card);
+  }
+  .stu-card .seat{font-size:11px;color:var(--ink-soft);}
+  .stu-card .name{font-size:16px;font-weight:700;margin:2px 0 8px;}
+  .stu-card .total{font-size:22px;font-weight:800;}
+  .stu-card .total.pos{color:var(--sage);}
+  .stu-card .total.neg{color:var(--pen-red);}
+  .stu-card .total.zero{color:var(--ink-soft);}
+  .stu-card .actions{display:flex;gap:6px;margin-top:10px;}
+  .stu-card .actions button{
+    flex:1;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;
+    border-radius:6px;padding:6px 0;border:1.5px solid var(--ink);background:var(--card);color:var(--ink);
+  }
+  .stu-card .actions button.primary{background:var(--sage);border-color:var(--sage);color:#fff;}
+
+  .modal-overlay{
+    display:none;position:fixed;inset:0;background:rgba(30,43,39,0.55);
+    align-items:center;justify-content:center;padding:20px;z-index:50;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal-box{
+    background:var(--card);border:2px solid var(--ink);border-radius:10px;
+    padding:24px;width:100%;max-width:420px;max-height:85vh;overflow:auto;position:relative;
+  }
+  .modal-box h3{margin:0 0 4px;font-size:19px;padding-right:30px;}
+  .modal-box .modal-sub{font-size:12.5px;color:var(--ink-soft);margin-bottom:16px;}
+  .modal-close{
+    position:absolute;top:16px;right:16px;width:30px;height:30px;
+    border:2px solid var(--ink);border-radius:50%;background:var(--paper);
+    cursor:pointer;font-size:15px;font-weight:700;line-height:1;color:var(--ink);
+  }
+
+  .cat-list{display:flex;flex-direction:column;gap:8px;}
+  .cat-btn{
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:inherit;font-size:14.5px;font-weight:700;cursor:pointer;
+    border-radius:8px;padding:10px 14px;border:1.5px solid var(--paper-line);background:var(--paper);color:var(--ink);
+    text-align:left;
+  }
+  .cat-btn .pts{font-size:14px;font-weight:800;border-radius:12px;padding:2px 10px;}
+  .cat-btn.pos .pts{background:var(--sage-soft);color:var(--sage);}
+  .cat-btn.neg .pts{background:var(--pen-red-soft);color:var(--pen-red);}
+  .cat-btn:disabled{opacity:0.5;cursor:default;}
+
+  .timeline{display:flex;flex-direction:column;gap:0;}
+  .timeline .row{
+    display:flex;justify-content:space-between;gap:10px;padding:10px 0;
+    border-bottom:1px solid var(--paper-line);font-size:13.5px;
+  }
+  .timeline .row .cat{font-weight:700;}
+  .timeline .row .time{color:var(--ink-soft);font-size:11.5px;}
+  .timeline .row .pts{font-weight:800;flex-shrink:0;}
+  .timeline .row .pts.pos{color:var(--sage);}
+  .timeline .row .pts.neg{color:var(--pen-red);}
+  .timeline .empty{color:var(--ink-soft);font-size:13.5px;text-align:center;padding:20px 0;}
+
+  .empty-state{text-align:center;padding:60px 20px;color:var(--ink-soft);}
+
+  footer{margin-top:30px;text-align:center;color:#9AA69A;font-size:12px;}
+
+  @media (max-width:560px){
+    h1{font-size:26px;}
+    .panel{padding:16px;}
+    nav.tabs button{padding:8px 14px 7px;font-size:14.5px;}
+    .grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="eyebrow">班級經營</span>
+    <h1>加減分紀錄</h1>
+    <p>506 · 507 · 508 · 509 · 510　點學生卡片加減分，排行榜即時更新</p>
+  </header>
+
+  <nav class="tabs" id="tabs"></nav>
+
+  <div class="toolbar">
+    <div class="status" id="statusText">讀取中…</div>
+    <button class="refresh" id="refreshBtn">🔄 重新整理</button>
+  </div>
+
+  <section class="panel" id="panel"></section>
+
+  <footer>資料同步至 Google 試算表</footer>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose" aria-label="關閉">✕</button>
+    <h3 id="modalTitle"></h3>
+    <div class="modal-sub" id="modalSub"></div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzXXRYVb8Xwm9kY2HUpykGnMktss2MjDom-pigwFzdtPY3tvbvXu09xPl0-XCwN0CniyQ/exec";
+
+const classes = ["506","507","508","509","510"];
+let current = "510";
+let STATE = { students: [], categories: [], records: [] };
+let loaded = false;
+
+function statusText(msg){ document.getElementById("statusText").textContent = msg; }
+
+async function loadState(){
+  statusText("讀取中…");
+  try {
+    const res = await fetch(WEBAPP_URL + "?action=state", { cache: "no-store" });
+    const data = await res.json();
+    STATE = data;
+    loaded = true;
+    statusText("最後更新：" + new Date().toLocaleTimeString("zh-TW"));
+  } catch(e){
+    statusText("讀取失敗，請按重新整理再試一次");
+  }
+  renderTabs();
+  renderPanel();
+}
+
+async function postRecord(student, category){
+  statusText("送出中…");
+  const payload = {
+    className: student.className,
+    seat: student.seat,
+    name: student.name,
+    category: category.name,
+    points: category.points
+  };
+  try {
+    const res = await fetch(WEBAPP_URL, { method: "POST", body: JSON.stringify(payload) });
+    const data = await res.json();
+    STATE = data;
+    statusText("已更新：" + new Date().toLocaleTimeString("zh-TW"));
+  } catch(e){
+    statusText("送出失敗，請重試");
+  }
+  renderPanel();
+}
+
+function studentsInClass(cls){
+  return STATE.students.filter(s => s.className === cls);
+}
+function recordsFor(cls, seat){
+  return STATE.records.filter(r => r.className === cls && r.seat === seat);
+}
+function totalFor(cls, seat){
+  return recordsFor(cls, seat).reduce((sum, r) => sum + r.points, 0);
+}
+
+function renderTabs(){
+  const tabsEl = document.getElementById("tabs");
+  tabsEl.innerHTML = classes.map(c => `<button data-c="${c}" class="${c===current?'active':''}">${c} 班</button>`).join("");
+  tabsEl.querySelectorAll("button").forEach(b=>{
+    b.addEventListener("click", ()=>{ current = b.dataset.c; renderTabs(); renderPanel(); });
+  });
+}
+
+function renderPanel(){
+  const panelEl = document.getElementById("panel");
+  if (!loaded){
+    panelEl.innerHTML = `<div class="empty-state">正在連線 Google 試算表…</div>`;
+    return;
+  }
+  const students = studentsInClass(current);
+  if (students.length === 0){
+    panelEl.innerHTML = `<div class="empty-state">找不到 ${current} 班的學生名單</div>`;
+    return;
+  }
+  const withTotals = students.map(s => ({ ...s, total: totalFor(s.className, s.seat) }));
+  withTotals.sort((a,b) => b.total - a.total || a.seat - b.seat);
+
+  panelEl.innerHTML = `<div class="grid">${withTotals.map((s, i) => {
+    const cls = s.total > 0 ? "pos" : (s.total < 0 ? "neg" : "zero");
+    return `
+      <div class="stu-card">
+        <div class="rank">${i+1}</div>
+        <div class="seat">座號 ${s.seat}</div>
+        <div class="name">${s.name}</div>
+        <div class="total ${cls}">${s.total > 0 ? '+' : ''}${s.total}</div>
+        <div class="actions">
+          <button class="primary" data-act="add" data-seat="${s.seat}">加減分</button>
+          <button data-act="log" data-seat="${s.seat}">紀錄</button>
+        </div>
+      </div>
+    `;
+  }).join("")}</div>`;
+
+  panelEl.querySelectorAll('button[data-act="add"]').forEach(b=>{
+    b.addEventListener("click", () => openAddModal(current, parseInt(b.dataset.seat, 10)));
+  });
+  panelEl.querySelectorAll('button[data-act="log"]').forEach(b=>{
+    b.addEventListener("click", () => openLogModal(current, parseInt(b.dataset.seat, 10)));
+  });
+}
+
+function findStudent(cls, seat){
+  return STATE.students.find(s => s.className === cls && s.seat === seat);
+}
+
+function openModalBase(title, sub){
+  document.getElementById("modalTitle").textContent = title;
+  document.getElementById("modalSub").textContent = sub || "";
+  document.getElementById("modalOverlay").classList.add("open");
+}
+function closeModal(){
+  document.getElementById("modalOverlay").classList.remove("open");
+}
+
+function openAddModal(cls, seat){
+  const student = findStudent(cls, seat);
+  if (!student) return;
+  openModalBase(`${student.name}`, `${cls} 班・座號 ${seat}　目前總分 ${totalFor(cls, seat)}`);
+  const body = document.getElementById("modalBody");
+  body.innerHTML = `<div class="cat-list">${STATE.categories.map((c,i) => {
+    const sign = c.points > 0 ? "pos" : "neg";
+    const ptsLabel = c.points > 0 ? `+${c.points}` : `${c.points}`;
+    return `<button class="cat-btn ${sign}" data-i="${i}">
+      <span>${c.name}</span><span class="pts">${ptsLabel}</span>
+    </button>`;
+  }).join("")}</div>`;
+  body.querySelectorAll(".cat-btn").forEach(btn=>{
+    btn.addEventListener("click", async () => {
+      body.querySelectorAll(".cat-btn").forEach(b => b.disabled = true);
+      const cat = STATE.categories[parseInt(btn.dataset.i, 10)];
+      await postRecord(student, cat);
+      closeModal();
+    });
+  });
+}
+
+function openLogModal(cls, seat){
+  const student = findStudent(cls, seat);
+  if (!student) return;
+  openModalBase(`${student.name}的紀錄`, `${cls} 班・座號 ${seat}　目前總分 ${totalFor(cls, seat)}`);
+  const records = recordsFor(cls, seat).slice().sort((a,b) => new Date(b.time) - new Date(a.time));
+  const body = document.getElementById("modalBody");
+  if (records.length === 0){
+    body.innerHTML = `<div class="timeline"><div class="empty">還沒有任何紀錄</div></div>`;
+    return;
+  }
+  body.innerHTML = `<div class="timeline">${records.map(r => {
+    const sign = r.points > 0 ? "pos" : "neg";
+    const ptsLabel = r.points > 0 ? `+${r.points}` : `${r.points}`;
+    let timeStr = r.time;
+    const d = new Date(r.time);
+    if (!isNaN(d)) timeStr = d.toLocaleString("zh-TW", { month:"numeric", day:"numeric", hour:"2-digit", minute:"2-digit" });
+    return `<div class="row">
+      <div><div class="cat">${r.category}</div><div class="time">${timeStr}</div></div>
+      <div class="pts ${sign}">${ptsLabel}</div>
+    </div>`;
+  }).join("")}</div>`;
+}
+
+document.getElementById("modalClose").addEventListener("click", closeModal);
+document.getElementById("modalOverlay").addEventListener("click", (e) => {
+  if (e.target.id === "modalOverlay") closeModal();
+});
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+document.getElementById("refreshBtn").addEventListener("click", loadState);
+
+renderTabs();
+renderPanel();
+loadState();
+</script>
+</body>
+</html>
