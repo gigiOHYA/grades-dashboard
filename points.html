@@ -6,25 +6,24 @@
 <title>班級經營｜加減分</title>
 <style>
   :root{
-    --paper:#EEF2ED;
-    --paper-line:#D3DCD2;
-    --ink:#1E2B27;
-    --ink-soft:#4B5A54;
-    --pen-red:#C4433B;
-    --pen-red-soft:#F3D9D6;
-    --sage:#5C8A78;
-    --sage-soft:#DCEAE2;
-    --card:#FBFAF6;
-    --gold:#D89A34;
+    --paper:#FFF6EC;
+    --paper-line:#FFE3C2;
+    --ink:#3A2E27;
+    --ink-soft:#8A7A6E;
+    --pink:#FF6B81;
+    --pink-soft:#FFE1E6;
+    --mint:#2FBF9F;
+    --mint-soft:#D8F7EF;
+    --card:#FFFFFF;
+    --gold:#FFB627;
+    --sky:#5AB4E0;
   }
   *{box-sizing:border-box;}
   body{
     margin:0;
     background-color:var(--paper);
-    background-image:
-      linear-gradient(var(--paper-line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--paper-line) 1px, transparent 1px);
-    background-size: 28px 28px;
+    background-image: radial-gradient(var(--paper-line) 1.6px, transparent 1.6px);
+    background-size: 22px 22px;
     color:var(--ink);
     font-family: "Microsoft JhengHei","PingFang TC","Noto Sans TC",-apple-system,sans-serif;
     line-height:1.5;
@@ -34,80 +33,89 @@
 
   header{margin-bottom:28px;}
   .eyebrow{
-    display:inline-block;font-size:13px;color:var(--sage);
-    border:1.5px solid var(--sage);border-radius:3px;padding:2px 8px;
+    display:inline-block;font-size:13px;color:#fff;background:var(--mint);
+    border-radius:20px;padding:4px 14px;font-weight:800;
     transform:rotate(-2deg);margin-bottom:10px;
   }
-  h1{font-size:32px;margin:0 0 6px;font-weight:700;letter-spacing:0.5px;}
+  h1{font-size:34px;margin:0 0 6px;font-weight:800;letter-spacing:0.5px;}
   header p{margin:0;color:var(--ink-soft);font-size:14.5px;}
 
-  nav.tabs{display:flex;gap:6px;margin:26px 0 16px;border-bottom:2px solid var(--ink);flex-wrap:wrap;}
+  nav.tabs{display:flex;gap:8px;margin:26px 0 16px;flex-wrap:wrap;}
   nav.tabs button{
-    font-family:inherit;font-size:16px;font-weight:700;background:transparent;
-    border:2px solid var(--ink);border-bottom:none;border-radius:8px 8px 0 0;
-    padding:9px 20px 8px;cursor:pointer;color:var(--ink-soft);position:relative;top:2px;
+    font-family:inherit;font-size:16px;font-weight:800;background:var(--card);
+    border:none;border-radius:20px;
+    padding:10px 22px;cursor:pointer;color:var(--ink-soft);
+    box-shadow:0 2px 0 var(--paper-line);
   }
-  nav.tabs button.active{background:var(--card);color:var(--ink);top:2px;border-bottom:2px solid var(--card);}
+  nav.tabs button.active{background:var(--mint);color:#fff;box-shadow:0 3px 0 #1f9b81;}
 
   .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;}
   .toolbar .status{font-size:12.5px;color:var(--ink-soft);}
   .toolbar .refresh{
-    font-family:inherit;font-size:13px;font-weight:700;background:var(--card);
-    border:1.5px solid var(--paper-line);border-radius:16px;padding:6px 14px;cursor:pointer;color:var(--ink-soft);
+    font-family:inherit;font-size:13px;font-weight:800;background:var(--card);
+    border:none;border-radius:20px;padding:8px 16px;cursor:pointer;color:var(--ink-soft);
+    box-shadow:0 2px 0 var(--paper-line);
   }
 
-  .panel{background:var(--card);border:2px solid var(--ink);border-radius:0 10px 10px 10px;padding:24px;}
+  .panel{background:transparent;border:none;padding:0;}
 
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;}
   .stu-card{
-    background:var(--paper);border:1.5px solid var(--paper-line);border-radius:10px;
-    padding:12px 12px 10px;position:relative;
+    background:var(--card);border:none;border-radius:20px;
+    padding:14px 14px 12px;position:relative;
+    box-shadow:0 4px 0 var(--paper-line);
   }
   .stu-card .rank{
-    position:absolute;top:-8px;left:-8px;width:22px;height:22px;border-radius:50%;
-    background:var(--gold);color:#fff;font-size:11px;font-weight:800;
+    position:absolute;top:-10px;left:-10px;width:26px;height:26px;border-radius:50%;
+    background:var(--gold);color:#fff;font-size:12px;font-weight:800;
     display:flex;align-items:center;justify-content:center;border:2px solid var(--card);
+    box-shadow:0 2px 0 #d99315;
   }
-  .stu-card .seat{font-size:11px;color:var(--ink-soft);}
-  .stu-card .name{font-size:16px;font-weight:700;margin:2px 0 8px;}
-  .stu-card .total{font-size:22px;font-weight:800;}
-  .stu-card .total.pos{color:var(--sage);}
-  .stu-card .total.neg{color:var(--pen-red);}
+  .stu-card .seat{
+    font-size:30px;font-weight:800;color:var(--sky);line-height:1;margin-bottom:2px;
+  }
+  .stu-card .name{font-size:16px;font-weight:800;margin:0 0 8px;}
+  .stu-card .total{font-size:24px;font-weight:800;}
+  .stu-card .total.pos{color:var(--mint);}
+  .stu-card .total.neg{color:var(--pink);}
   .stu-card .total.zero{color:var(--ink-soft);}
   .stu-card .actions{display:flex;gap:6px;margin-top:10px;}
   .stu-card .actions button{
-    flex:1;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;
-    border-radius:6px;padding:6px 0;border:1.5px solid var(--ink);background:var(--card);color:var(--ink);
+    flex:1;font-family:inherit;font-size:12.5px;font-weight:800;cursor:pointer;
+    border-radius:14px;padding:7px 0;border:none;background:var(--paper);color:var(--ink-soft);
   }
-  .stu-card .actions button.primary{background:var(--sage);border-color:var(--sage);color:#fff;}
+  .stu-card .actions button.primary{background:var(--mint);color:#fff;}
 
   .modal-overlay{
-    display:none;position:fixed;inset:0;background:rgba(30,43,39,0.55);
+    display:none;position:fixed;inset:0;background:rgba(58,46,39,0.45);
     align-items:center;justify-content:center;padding:20px;z-index:50;
   }
   .modal-overlay.open{display:flex;}
   .modal-box{
-    background:var(--card);border:2px solid var(--ink);border-radius:10px;
-    padding:24px;width:100%;max-width:420px;max-height:85vh;overflow:auto;position:relative;
+    background:var(--card);border:none;border-radius:24px;
+    padding:26px;width:100%;max-width:420px;max-height:85vh;overflow:auto;position:relative;
+    box-shadow:0 8px 0 var(--paper-line);
   }
-  .modal-box h3{margin:0 0 4px;font-size:19px;padding-right:30px;}
+  .modal-box h3{margin:0 0 4px;font-size:20px;padding-right:30px;font-weight:800;}
   .modal-box .modal-sub{font-size:12.5px;color:var(--ink-soft);margin-bottom:16px;}
   .modal-close{
-    position:absolute;top:16px;right:16px;width:30px;height:30px;
-    border:2px solid var(--ink);border-radius:50%;background:var(--paper);
-    cursor:pointer;font-size:15px;font-weight:700;line-height:1;color:var(--ink);
+    position:absolute;top:16px;right:16px;width:32px;height:32px;
+    border:none;border-radius:50%;background:var(--paper);
+    cursor:pointer;font-size:15px;font-weight:800;line-height:1;color:var(--ink);
   }
 
-  .cat-list{display:flex;flex-direction:column;gap:8px;}
+  .cat-list{display:flex;flex-direction:column;gap:9px;}
   .cat-btn{
     display:flex;justify-content:space-between;align-items:center;
-    font-family:inherit;font-size:14.5px;font-weight:700;cursor:pointer;
-    border-radius:8px;padding:10px 14px;border:1.5px solid var(--paper-line);background:var(--paper);color:var(--ink);
+    font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;
+    border-radius:16px;padding:12px 16px;border:none;background:var(--paper);color:var(--ink);
     text-align:left;
   }
-  .cat-btn .pts{font-size:14px;font-weight:800;border-radius:12px;padding:2px 10px;}
-  .cat-btn.pos .pts{background:var(--sage-soft);color:var(--sage);}
-  .cat-btn.neg .pts{background:var(--pen-red-soft);color:var(--pen-red);}
+  .cat-btn .pts{font-size:14px;font-weight:800;border-radius:14px;padding:3px 12px;}
+  .cat-btn.pos{background:var(--mint-soft);}
+  .cat-btn.pos .pts{background:var(--mint);color:#fff;}
+  .cat-btn.neg{background:var(--pink-soft);}
+  .cat-btn.neg .pts{background:var(--pink);color:#fff;}
   .cat-btn:disabled{opacity:0.5;cursor:default;}
 
   .timeline{display:flex;flex-direction:column;gap:0;}
@@ -115,21 +123,20 @@
     display:flex;justify-content:space-between;gap:10px;padding:10px 0;
     border-bottom:1px solid var(--paper-line);font-size:13.5px;
   }
-  .timeline .row .cat{font-weight:700;}
+  .timeline .row .cat{font-weight:800;}
   .timeline .row .time{color:var(--ink-soft);font-size:11.5px;}
   .timeline .row .pts{font-weight:800;flex-shrink:0;}
-  .timeline .row .pts.pos{color:var(--sage);}
-  .timeline .row .pts.neg{color:var(--pen-red);}
+  .timeline .row .pts.pos{color:var(--mint);}
+  .timeline .row .pts.neg{color:var(--pink);}
   .timeline .empty{color:var(--ink-soft);font-size:13.5px;text-align:center;padding:20px 0;}
 
   .empty-state{text-align:center;padding:60px 20px;color:var(--ink-soft);}
 
-  footer{margin-top:30px;text-align:center;color:#9AA69A;font-size:12px;}
+  footer{margin-top:30px;text-align:center;color:#C9B9A9;font-size:12px;}
 
   @media (max-width:560px){
     h1{font-size:26px;}
-    .panel{padding:16px;}
-    nav.tabs button{padding:8px 14px 7px;font-size:14.5px;}
+    nav.tabs button{padding:9px 16px;font-size:14.5px;}
     .grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));}
   }
 </style>
@@ -138,7 +145,7 @@
 <div class="wrap">
 
   <header>
-    <span class="eyebrow">班級經營</span>
+    <span class="eyebrow">✨ 班級經營</span>
     <h1>加減分紀錄</h1>
     <p>506 · 507 · 508 · 509 · 510　點學生卡片加減分，排行榜即時更新</p>
   </header>
@@ -271,7 +278,7 @@ function renderPanel(){
     return `
       <div class="stu-card">
         ${rankBadge}
-        <div class="seat">座號 ${s.seat}</div>
+        <div class="seat">${s.seat}</div>
         <div class="name">${s.name}</div>
         <div class="total ${cls}">${s.total > 0 ? '+' : ''}${s.total}</div>
         <div class="actions">
