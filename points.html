@@ -147,7 +147,11 @@
 
   <div class="toolbar">
     <div class="status" id="statusText">讀取中…</div>
-    <button class="refresh" id="refreshBtn">🔄 重新整理</button>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="refresh" id="sortToggleBtn">🏆 排行榜排序</button>
+      <button class="refresh" id="resetBtn">♻️ 重置本班分數</button>
+      <button class="refresh" id="refreshBtn">🔄 重新整理</button>
+    </div>
   </div>
 
   <section class="panel" id="panel"></section>
@@ -169,6 +173,7 @@ const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzXXRYVb8Xwm9kY2HUpy
 
 const classes = ["506","507","508","509","510"];
 let current = "510";
+let sortByRank = false;
 let STATE = { students: [], categories: [], records: [] };
 let loaded = false;
 
@@ -239,13 +244,18 @@ function renderPanel(){
     return;
   }
   const withTotals = students.map(s => ({ ...s, total: totalFor(s.className, s.seat) }));
-  withTotals.sort((a,b) => b.total - a.total || a.seat - b.seat);
+  if (sortByRank){
+    withTotals.sort((a,b) => b.total - a.total || a.seat - b.seat);
+  } else {
+    withTotals.sort((a,b) => a.seat - b.seat);
+  }
 
   panelEl.innerHTML = `<div class="grid">${withTotals.map((s, i) => {
     const cls = s.total > 0 ? "pos" : (s.total < 0 ? "neg" : "zero");
+    const rankBadge = sortByRank ? `<div class="rank">${i+1}</div>` : "";
     return `
       <div class="stu-card">
-        <div class="rank">${i+1}</div>
+        ${rankBadge}
         <div class="seat">座號 ${s.seat}</div>
         <div class="name">${s.name}</div>
         <div class="total ${cls}">${s.total > 0 ? '+' : ''}${s.total}</div>
@@ -329,6 +339,27 @@ document.getElementById("modalOverlay").addEventListener("click", (e) => {
 });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
 document.getElementById("refreshBtn").addEventListener("click", loadState);
+
+document.getElementById("sortToggleBtn").addEventListener("click", (e) => {
+  sortByRank = !sortByRank;
+  e.target.textContent = sortByRank ? "🔢 座號排序" : "🏆 排行榜排序";
+  renderPanel();
+});
+
+document.getElementById("resetBtn").addEventListener("click", async () => {
+  const ok = confirm(`確定要重置 ${current} 班全部學生的分數嗎？\n\n這不會刪除歷史紀錄，只會補一筆歸零紀錄，把每個人的總分變回 0。`);
+  if (!ok) return;
+  statusText("重置中…");
+  try {
+    const res = await fetch(WEBAPP_URL, { method: "POST", body: JSON.stringify({ action: "resetClass", className: current }) });
+    const data = await res.json();
+    STATE = data;
+    statusText("已重置：" + new Date().toLocaleTimeString("zh-TW"));
+  } catch(e){
+    statusText("重置失敗，請重試");
+  }
+  renderPanel();
+});
 
 renderTabs();
 renderPanel();
