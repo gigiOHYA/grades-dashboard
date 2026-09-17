@@ -219,27 +219,28 @@ let STATE = { students: [], categories: [], records: [] };
 let loaded = false;
 
 // 20 個台灣史前及歷史時代，每 50 班級積分一個階段，貼近五年級社會課本。
+// img: 場景圖相對路徑。
 const ERAS = [
-  { name:"史前時代",       emoji:"🦴", bg:"#EDE3D3", accent:"#8B7355" },
-  { name:"新石器時代",     emoji:"🏺", bg:"#E2D9CB", accent:"#6E6259" },
-  { name:"南島原住民時代", emoji:"🛶", bg:"#E3EBD9", accent:"#5C8A4C" },
-  { name:"大航海時代",     emoji:"🗺️", bg:"#CDE7EF", accent:"#1F7A99" },
-  { name:"荷西時期",       emoji:"🏯", bg:"#F1DDBE", accent:"#B8860B" },
-  { name:"明鄭時期",       emoji:"⚔️", bg:"#D8D3CE", accent:"#5A5854" },
-  { name:"清領前期",       emoji:"🌾", bg:"#EDE7B8", accent:"#A98B2E" },
-  { name:"開港通商時期",   emoji:"⚓", bg:"#D3E3EC", accent:"#2E6E99" },
-  { name:"建省維新時期",   emoji:"🚂", bg:"#E4D4C3", accent:"#7A4A2B" },
-  { name:"日治前期",       emoji:"🏫", bg:"#E9E3D6", accent:"#8C6A3F" },
-  { name:"日治建設時期",   emoji:"🏗️", bg:"#DDD6CE", accent:"#6B5B4A" },
-  { name:"日治戰爭時期",   emoji:"🕊️", bg:"#E3E6E0", accent:"#6E7A6C" },
-  { name:"戰後初期",       emoji:"📜", bg:"#F1E6D3", accent:"#A9772E" },
-  { name:"遷台歲月",       emoji:"🚢", bg:"#D6E0F0", accent:"#3355A8" },
-  { name:"經濟起飛時代",   emoji:"🏭", bg:"#E6DCC8", accent:"#8A6A2E" },
-  { name:"民主化時代",     emoji:"🗳️", bg:"#F3DDE3", accent:"#B5456D" },
-  { name:"本土文化時代",   emoji:"🎭", bg:"#F0DCEA", accent:"#8B3F8C" },
-  { name:"科技產業時代",   emoji:"💻", bg:"#D9EAE6", accent:"#1F7A5E" },
-  { name:"智慧台灣時代",   emoji:"📱", bg:"#E6D9F2", accent:"#6B3FA0" },
-  { name:"AI 世代",        emoji:"✨", bg:"#E0F7FA", accent:"#0097A7" }
+  { name:"史前時代",       emoji:"🦴", bg:"#EDE3D3", accent:"#8B7355", img:"images/era-01.jpg" },
+  { name:"新石器時代",     emoji:"🏺", bg:"#E2D9CB", accent:"#6E6259", img:"images/era-02.jpg" },
+  { name:"南島原住民時代", emoji:"🛶", bg:"#E3EBD9", accent:"#5C8A4C", img:"images/era-03.jpg" },
+  { name:"大航海時代",     emoji:"🗺️", bg:"#CDE7EF", accent:"#1F7A99", img:"images/era-04.jpg" },
+  { name:"荷西時期",       emoji:"🏯", bg:"#F1DDBE", accent:"#B8860B", img:"images/era-05.jpg" },
+  { name:"明鄭時期",       emoji:"⚔️", bg:"#D8D3CE", accent:"#5A5854", img:"images/era-06.jpg" },
+  { name:"清領前期",       emoji:"🌾", bg:"#EDE7B8", accent:"#A98B2E", img:"images/era-07.jpg" },
+  { name:"開港通商時期",   emoji:"⚓", bg:"#D3E3EC", accent:"#2E6E99", img:"images/era-08.jpg" },
+  { name:"建省維新時期",   emoji:"🚂", bg:"#E4D4C3", accent:"#7A4A2B", img:"images/era-09.jpg" },
+  { name:"日治前期",       emoji:"🏫", bg:"#E9E3D6", accent:"#8C6A3F", img:"images/era-10.jpg" },
+  { name:"日治建設時期",   emoji:"🏗️", bg:"#DDD6CE", accent:"#6B5B4A", img:"images/era-11.jpg" },
+  { name:"日治戰爭時期",   emoji:"🕊️", bg:"#E3E6E0", accent:"#6E7A6C", img:"images/era-12.jpg" },
+  { name:"戰後初期",       emoji:"📜", bg:"#F1E6D3", accent:"#A9772E", img:"images/era-13.jpg" },
+  { name:"遷台歲月",       emoji:"🚢", bg:"#D6E0F0", accent:"#3355A8", img:"images/era-14.jpg" },
+  { name:"經濟起飛時代",   emoji:"🏭", bg:"#E6DCC8", accent:"#8A6A2E", img:"images/era-15.jpg" },
+  { name:"民主化時代",     emoji:"🗳️", bg:"#F3DDE3", accent:"#B5456D", img:"images/era-16.jpg" },
+  { name:"本土文化時代",   emoji:"🎭", bg:"#F0DCEA", accent:"#8B3F8C", img:"images/era-17.jpg" },
+  { name:"科技產業時代",   emoji:"💻", bg:"#D9EAE6", accent:"#1F7A5E", img:"images/era-18.jpg" },
+  { name:"智慧台灣時代",   emoji:"📱", bg:"#E6D9F2", accent:"#6B3FA0", img:"images/era-19.jpg" },
+  { name:"AI 世代",        emoji:"✨", bg:"#E0F7FA", accent:"#0097A7", img:"images/era-20.jpg" }
 ];
 const POINTS_PER_ERA = 50;
 
@@ -256,15 +257,21 @@ function applyEraBackground(score){
   const layer = document.getElementById('sceneLayer');
   const ground = document.getElementById('sceneGround');
   const emojiEl = document.getElementById('sceneEmoji');
-  if (layer){
-    layer.style.background = `linear-gradient(180deg, ${lighten(era.bg, 10)} 0%, ${era.bg} 70%)`;
-  }
-  if (ground){
-    ground.style.backgroundColor = era.accent;
-    ground.style.opacity = "0.10";
-  }
-  if (emojiEl){
-    emojiEl.textContent = era.emoji;
+  if (era.img){
+    if (layer){
+      layer.style.background = `linear-gradient(180deg, rgba(0,0,0,0) 0%, ${era.bg} 92%), url('${era.img}') center center / cover no-repeat`;
+    }
+    if (ground) ground.style.opacity = "0";
+    if (emojiEl) emojiEl.textContent = "";
+  } else {
+    if (layer){
+      layer.style.background = `linear-gradient(180deg, ${lighten(era.bg, 10)} 0%, ${era.bg} 70%)`;
+    }
+    if (ground){
+      ground.style.backgroundColor = era.accent;
+      ground.style.opacity = "0.10";
+    }
+    if (emojiEl) emojiEl.textContent = era.emoji;
   }
 }
 function lighten(hex, amt){
