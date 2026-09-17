@@ -155,9 +155,9 @@
     display:flex;align-items:center;gap:16px;background:var(--card);
     border-radius:20px;padding:16px 20px;margin-bottom:18px;
     box-shadow:0 4px 0 var(--paper-line);border-left:8px solid var(--era-accent, var(--mint));
-    position:relative;overflow:hidden;background-size:cover;background-position:center;
+    position:relative;overflow:hidden;
   }
-  .era-banner.has-img{border-left:none;color:#fff;min-height:140px;}
+  .era-banner.has-img{border-left:none;color:#fff;min-height:190px;}
   .era-banner.has-img .era-name{color:#fff;text-shadow:0 2px 6px rgba(0,0,0,0.55);}
   .era-banner.has-img .era-score{color:#fff;text-shadow:0 1px 4px rgba(0,0,0,0.5);}
   .era-banner.has-img .era-next{color:#fff;text-shadow:0 1px 4px rgba(0,0,0,0.5);}
@@ -381,7 +381,7 @@ function renderPanel(){
     : `再 ${floor + POINTS_PER_ERA - total} 分晉級「${ERAS[idx+1].name} ${ERAS[idx+1].emoji}」`;
 
   const bannerBg = era.img
-    ? `background:linear-gradient(90deg, rgba(0,0,0,0.6), rgba(0,0,0,0.15)), url('${era.img}') center/cover no-repeat;`
+    ? `background-color:${era.bg};background-image:linear-gradient(90deg, rgba(0,0,0,0.55), rgba(0,0,0,0.05)), url('${era.img}');background-size:100% 100%, contain;background-position:center, center;background-repeat:no-repeat, no-repeat;`
     : "";
   const eraBanner = `
     <div class="era-banner${era.img ? ' has-img' : ''}" style="--era-accent:${era.accent};${bannerBg}">
