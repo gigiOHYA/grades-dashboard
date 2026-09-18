@@ -157,8 +157,14 @@
     box-shadow:0 4px 0 var(--paper-line);
   }
   .era-banner .era-img-area{
-    width:100%;height:180px;background-size:contain;background-position:center;
-    background-repeat:no-repeat;
+    position:relative;width:100%;height:180px;overflow:hidden;
+  }
+  .era-banner .era-img-blur{
+    position:absolute;inset:-12px;background-size:cover;background-position:center;
+    filter:blur(16px) brightness(0.82);transform:scale(1.12);
+  }
+  .era-banner .era-img-sharp{
+    position:relative;z-index:1;display:block;width:100%;height:100%;object-fit:contain;
   }
   .era-banner .era-content{
     display:flex;align-items:center;gap:16px;padding:16px 20px;
@@ -382,12 +388,12 @@ function renderPanel(){
     ? "已經抵達最終時代，太厲害了！"
     : `再 ${floor + POINTS_PER_ERA - total} 分晉級「${ERAS[idx+1].name} ${ERAS[idx+1].emoji}」`;
 
-  const bannerBg = era.img
-    ? `background-color:${era.bg};background-image:url('${era.img}');`
-    : "";
   const eraBanner = `
     <div class="era-banner" style="--era-accent:${era.accent}">
-      ${era.img ? `<div class="era-img-area" style="${bannerBg}"></div>` : ""}
+      ${era.img ? `<div class="era-img-area">
+        <div class="era-img-blur" style="background-image:url('${era.img}')"></div>
+        <img class="era-img-sharp" src="${era.img}" alt="">
+      </div>` : ""}
       <div class="era-content">
         <div class="era-emoji">${era.img ? '' : era.emoji}</div>
         <div class="era-info">
