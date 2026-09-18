@@ -79,6 +79,7 @@
   .stu-card .total.pos{color:var(--mint);}
   .stu-card .total.neg{color:var(--pink);}
   .stu-card .total.zero{color:var(--ink-soft);}
+  .stu-card .total-label{font-size:10.5px;color:var(--ink-soft);margin-top:-2px;}
   .stu-card .actions{display:flex;gap:6px;margin-top:10px;}
   .stu-card .actions button{
     flex:1;font-family:inherit;font-size:12.5px;font-weight:800;cursor:pointer;
@@ -258,9 +259,6 @@ const ERAS = [
 ];
 const POINTS_PER_ERA = 50;
 
-function classTotal(cls){
-  return STATE.records.filter(r => r.className === cls).reduce((sum, r) => sum + r.points, 0);
-}
 function eraForScore(score){
   const idx = Math.max(0, Math.min(ERAS.length - 1, Math.floor(Math.max(0, score) / POINTS_PER_ERA)));
   return { idx, era: ERAS[idx] };
@@ -357,6 +355,26 @@ function recordsFor(cls, seat){
 function totalFor(cls, seat){
   return recordsFor(cls, seat).reduce((sum, r) => sum + r.points, 0);
 }
+function isSameLocalDate(isoStr, ref){
+  const d = new Date(isoStr);
+  if (isNaN(d)) return false;
+  return d.getFullYear() === ref.getFullYear() && d.getMonth() === ref.getMonth() && d.getDate() === ref.getDate();
+}
+function dailyRecordsFor(cls, seat){
+  const now = new Date();
+  return recordsFor(cls, seat).filter(r => isSameLocalDate(r.time, now));
+}
+function dailyTotalFor(cls, seat){
+  return dailyRecordsFor(cls, seat).reduce((sum, r) => sum + r.points, 0);
+}
+function classTotal(cls){
+  // Exclude orphaned rows with no seat (e.g. from a bulk-add sent before the
+  // backend supported it) — they don't belong to any real student and
+  // shouldn't count toward the class's era progress.
+  return STATE.records
+    .filter(r => r.className === cls && r.seat !== '' && r.seat !== null && r.seat !== undefined)
+    .reduce((sum, r) => sum + r.points, 0);
+}
 
 function renderTabs(){
   const tabsEl = document.getElementById("tabs");
@@ -406,7 +424,7 @@ function renderPanel(){
     </div>
   `;
 
-  const withTotals = students.map(s => ({ ...s, total: totalFor(s.className, s.seat) }));
+  const withTotals = students.map(s => ({ ...s, total: dailyTotalFor(s.className, s.seat) }));
   if (sortByRank){
     withTotals.sort((a,b) => b.total - a.total || a.seat - b.seat);
   } else {
@@ -422,6 +440,7 @@ function renderPanel(){
         <div class="seat">${s.seat}</div>
         <div class="name">${s.name}</div>
         <div class="total ${cls}">${s.total > 0 ? '+' : ''}${s.total}</div>
+        <div class="total-label">今日</div>
         <div class="actions">
           <button class="primary" data-act="add" data-seat="${s.seat}">加減分</button>
           <button data-act="log" data-seat="${s.seat}">紀錄</button>
@@ -454,7 +473,7 @@ function closeModal(){
 function openAddModal(cls, seat){
   const student = findStudent(cls, seat);
   if (!student) return;
-  openModalBase(`${student.name}`, `${cls} 班・座號 ${seat}　目前總分 ${totalFor(cls, seat)}`);
+  openModalBase(`${student.name}`, `${cls} 班・座號 ${seat}　今日分數 ${dailyTotalFor(cls, seat)}`);
   const body = document.getElementById("modalBody");
   body.innerHTML = `<div class="cat-list">${STATE.categories.map((c,i) => {
     const sign = c.points > 0 ? "pos" : "neg";
@@ -475,7 +494,7 @@ function openAddModal(cls, seat){
 function openLogModal(cls, seat){
   const student = findStudent(cls, seat);
   if (!student) return;
-  openModalBase(`${student.name}的紀錄`, `${cls} 班・座號 ${seat}　目前總分 ${totalFor(cls, seat)}`);
+  openModalBase(`${student.name}的紀錄`, `${cls} 班・座號 ${seat}　今日 ${dailyTotalFor(cls, seat)} 分・累積 ${totalFor(cls, seat)} 分`);
   const records = recordsFor(cls, seat).slice().sort((a,b) => new Date(b.time) - new Date(a.time));
   const body = document.getElementById("modalBody");
   if (records.length === 0){
