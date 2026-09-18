@@ -153,12 +153,11 @@
   }
 
   .era-banner{
-    display:flex;flex-direction:column;background:var(--card);
-    border-radius:20px;margin-bottom:18px;overflow:hidden;
-    box-shadow:0 4px 0 var(--paper-line);
+    display:flex;flex-direction:column;margin-bottom:18px;
   }
   .era-banner .era-img-area{
-    position:relative;width:100%;aspect-ratio:21/9;overflow:hidden;
+    position:relative;width:100vw;margin-left:calc(50% - 50vw);
+    aspect-ratio:32/9;overflow:hidden;
   }
   .era-banner .era-img-blur{
     position:absolute;inset:-12px;background-size:cover;background-position:center;
@@ -170,6 +169,8 @@
   .era-banner .era-content{
     display:flex;align-items:center;gap:16px;padding:16px 20px;
     border-left:8px solid var(--era-accent, var(--mint));
+    background:var(--card);border-radius:0 0 20px 20px;overflow:hidden;
+    box-shadow:0 4px 0 var(--paper-line);
   }
   .era-banner .era-emoji{font-size:40px;line-height:1;flex-shrink:0;}
   .era-banner .era-info{flex:1;min-width:0;}
