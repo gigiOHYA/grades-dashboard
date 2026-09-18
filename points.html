@@ -152,16 +152,18 @@
   }
 
   .era-banner{
-    display:flex;align-items:center;gap:16px;background:var(--card);
-    border-radius:20px;padding:16px 20px;margin-bottom:18px;
-    box-shadow:0 4px 0 var(--paper-line);border-left:8px solid var(--era-accent, var(--mint));
-    position:relative;overflow:hidden;
+    display:flex;flex-direction:column;background:var(--card);
+    border-radius:20px;margin-bottom:18px;overflow:hidden;
+    box-shadow:0 4px 0 var(--paper-line);
   }
-  .era-banner.has-img{border-left:none;color:#fff;min-height:190px;}
-  .era-banner.has-img .era-name{color:#fff;text-shadow:0 2px 6px rgba(0,0,0,0.55);}
-  .era-banner.has-img .era-score{color:#fff;text-shadow:0 1px 4px rgba(0,0,0,0.5);}
-  .era-banner.has-img .era-next{color:#fff;text-shadow:0 1px 4px rgba(0,0,0,0.5);}
-  .era-banner.has-img .era-track{background:rgba(255,255,255,0.35);}
+  .era-banner .era-img-area{
+    width:100%;height:180px;background-size:contain;background-position:center;
+    background-repeat:no-repeat;
+  }
+  .era-banner .era-content{
+    display:flex;align-items:center;gap:16px;padding:16px 20px;
+    border-left:8px solid var(--era-accent, var(--mint));
+  }
   .era-banner .era-emoji{font-size:40px;line-height:1;flex-shrink:0;}
   .era-banner .era-info{flex:1;min-width:0;}
   .era-banner .era-name{font-size:19px;font-weight:800;}
@@ -381,16 +383,19 @@ function renderPanel(){
     : `再 ${floor + POINTS_PER_ERA - total} 分晉級「${ERAS[idx+1].name} ${ERAS[idx+1].emoji}」`;
 
   const bannerBg = era.img
-    ? `background-color:${era.bg};background-image:linear-gradient(90deg, rgba(0,0,0,0.55), rgba(0,0,0,0.05)), url('${era.img}');background-size:100% 100%, contain;background-position:center, center;background-repeat:no-repeat, no-repeat;`
+    ? `background-color:${era.bg};background-image:url('${era.img}');`
     : "";
   const eraBanner = `
-    <div class="era-banner${era.img ? ' has-img' : ''}" style="--era-accent:${era.accent};${bannerBg}">
-      <div class="era-emoji">${era.img ? '' : era.emoji}</div>
-      <div class="era-info">
-        <div class="era-name">${era.name}</div>
-        <div class="era-score">全班積分：${total} 分</div>
-        <div class="era-track"><div class="era-fill" style="width:${progressPct}%"></div></div>
-        <div class="era-next">${nextText}</div>
+    <div class="era-banner" style="--era-accent:${era.accent}">
+      ${era.img ? `<div class="era-img-area" style="${bannerBg}"></div>` : ""}
+      <div class="era-content">
+        <div class="era-emoji">${era.img ? '' : era.emoji}</div>
+        <div class="era-info">
+          <div class="era-name">${era.name}</div>
+          <div class="era-score">全班積分：${total} 分</div>
+          <div class="era-track"><div class="era-fill" style="width:${progressPct}%"></div></div>
+          <div class="era-next">${nextText}</div>
+        </div>
       </div>
     </div>
   `;
