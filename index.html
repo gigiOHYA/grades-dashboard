@@ -158,51 +158,51 @@
 </div>
 
 <script>
-// distribution arrays are ordered low → high (60以下 first, 100 last) —
+// distribution arrays are ordered low → high (未滿70 first, 100 last) —
 // the chart reads them left-to-right in this order; the table shows
 // high-to-low (reversed) for readability.
 const QUIZZES = ["1-1","1-2","1-3","2-1","2-2"];
 
 const RAW = {
   "506": { "1-1": { average: 76.33, distribution: [
-    { label:"70以下", count:6 },{ label:"70-79", count:5 },{ label:"80-89", count:9 },
-    { label:"90-94", count:3 },{ label:"95-99", count:1 },{ label:"100", count:0 }
+    { label:"未滿70", count:6 },{ label:"70-79", count:5 },{ label:"80-89", count:9 },
+    { label:"90-99", count:4 },{ label:"100", count:0 }
   ]},
   "1-2": { average: 83.58, distribution: [
-    { label:"70以下", count:3 },{ label:"70-79", count:3 },{ label:"80-89", count:7 },
-    { label:"90-94", count:5 },{ label:"95-99", count:5 },{ label:"100", count:1 }
+    { label:"未滿70", count:3 },{ label:"70-79", count:3 },{ label:"80-89", count:7 },
+    { label:"90-99", count:10 },{ label:"100", count:1 }
   ]} },
   "507": { "1-1": { average: 77.84, distribution: [
-    { label:"70以下", count:8 },{ label:"70-79", count:3 },{ label:"80-89", count:6 },
-    { label:"90-94", count:2 },{ label:"95-99", count:6 },{ label:"100", count:0 }
+    { label:"未滿70", count:8 },{ label:"70-79", count:3 },{ label:"80-89", count:6 },
+    { label:"90-99", count:8 },{ label:"100", count:0 }
   ]},
   "1-2": { average: 84.72, distribution: [
-    { label:"70以下", count:2 },{ label:"70-79", count:5 },{ label:"80-89", count:8 },
-    { label:"90-94", count:5 },{ label:"95-99", count:2 },{ label:"100", count:3 }
+    { label:"未滿70", count:2 },{ label:"70-79", count:5 },{ label:"80-89", count:8 },
+    { label:"90-99", count:7 },{ label:"100", count:3 }
   ]} },
   "508": { "1-1": { average: 84.24, distribution: [
-    { label:"70以下", count:2 },{ label:"70-79", count:5 },{ label:"80-89", count:7 },
-    { label:"90-94", count:4 },{ label:"95-99", count:5 },{ label:"100", count:2 }
+    { label:"未滿70", count:2 },{ label:"70-79", count:5 },{ label:"80-89", count:7 },
+    { label:"90-99", count:9 },{ label:"100", count:2 }
   ]},
   "1-2": { average: 87.04, distribution: [
-    { label:"70以下", count:2 },{ label:"70-79", count:4 },{ label:"80-89", count:6 },
-    { label:"90-94", count:6 },{ label:"95-99", count:5 },{ label:"100", count:2 }
+    { label:"未滿70", count:2 },{ label:"70-79", count:4 },{ label:"80-89", count:6 },
+    { label:"90-99", count:11 },{ label:"100", count:2 }
   ]} },
   "509": { "1-1": { average: 80.88, distribution: [
-    { label:"70以下", count:7 },{ label:"70-79", count:3 },{ label:"80-89", count:6 },
-    { label:"90-94", count:5 },{ label:"95-99", count:2 },{ label:"100", count:2 }
+    { label:"未滿70", count:7 },{ label:"70-79", count:3 },{ label:"80-89", count:6 },
+    { label:"90-99", count:7 },{ label:"100", count:2 }
   ]},
   "1-2": { average: 86.58, distribution: [
-    { label:"70以下", count:2 },{ label:"70-79", count:2 },{ label:"80-89", count:8 },
-    { label:"90-94", count:5 },{ label:"95-99", count:3 },{ label:"100", count:4 }
+    { label:"未滿70", count:2 },{ label:"70-79", count:2 },{ label:"80-89", count:8 },
+    { label:"90-99", count:8 },{ label:"100", count:4 }
   ]} },
   "510": { "1-1": { average: 76.37, distribution: [
-    { label:"70以下", count:7 },{ label:"70-79", count:7 },{ label:"80-89", count:7 },
-    { label:"90-94", count:3 },{ label:"95-99", count:2 },{ label:"100", count:1 }
+    { label:"未滿70", count:7 },{ label:"70-79", count:7 },{ label:"80-89", count:7 },
+    { label:"90-99", count:5 },{ label:"100", count:1 }
   ]},
   "1-2": { average: 83.85, distribution: [
-    { label:"70以下", count:3 },{ label:"70-79", count:5 },{ label:"80-89", count:8 },
-    { label:"90-94", count:7 },{ label:"95-99", count:3 },{ label:"100", count:1 }
+    { label:"未滿70", count:3 },{ label:"70-79", count:5 },{ label:"80-89", count:8 },
+    { label:"90-99", count:10 },{ label:"100", count:1 }
   ]} }
 };
 
