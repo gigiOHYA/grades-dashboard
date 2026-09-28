@@ -195,7 +195,7 @@ const RAW = {
 };
 
 const classes = Object.keys(RAW);
-let current = "510";
+let current = null; // no class selected when the page opens
 let currentQuiz = "1-1";
 let chartInstance = null;
 let modalChart = null;
@@ -226,6 +226,7 @@ function renderTabs(){
 
 function renderQuizTabs(){
   const el = document.getElementById("quizTabs");
+  if (!current){ el.innerHTML = ""; return; }
   el.innerHTML = QUIZZES.map(q => {
     const ready = !!RAW[current][q];
     return `<button data-q="${q}" class="${q===currentQuiz?'active':''}">${q} 小考${ready?'':'（尚無）'}</button>`;
@@ -275,9 +276,21 @@ function tableHtml(distribution){
 
 function renderPanel(){
   const panelEl = document.getElementById("panel");
-  const d = RAW[current][currentQuiz];
 
   if (chartInstance){ chartInstance.destroy(); chartInstance = null; }
+
+  if (!current){
+    panelEl.innerHTML = `
+      <div class="empty">
+        <div class="icon">?</div>
+        <p>請先選擇班級。</p>
+        <p class="small">點選上方的班級，就會顯示該班的小考成績。</p>
+      </div>
+    `;
+    return;
+  }
+
+  const d = RAW[current][currentQuiz];
 
   if (!d){
     panelEl.innerHTML = `
