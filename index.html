@@ -161,7 +161,24 @@
 // distribution arrays are ordered low → high (70以下 first, 100 last) —
 // the chart reads them left-to-right in this order; the table shows
 // high-to-low (reversed) for readability.
-const QUIZZES = ["1-1","1-2","1-3","2-1","2-2"];
+const QUIZZES = ["1-1","1-2","1-3","1-3-bonus","1-3-total","2-1","2-2"];
+
+// Display wording per tab. Plain quizzes (1-1, 1-2, 1-3, ...) use the defaults;
+// 加分 and 總分 have their own buckets, so they carry their own wording and
+// the label of the "top" bucket that the 滿分 stat counts.
+const QUIZ_META = {
+  "1-3-bonus": { tab:"1-3 加分", title:"1-3 加分", dist:"加分級距", top:"10",
+                 avg:"平均加分", stamp:"平均加分", topLabel:"加滿 10 分人數",
+                 countLabel:"統計人數", sub:n=>`統計 ${n} 人` },
+  "1-3-total": { tab:"1-3 總分", title:"1-3 總分", dist:"總分級距", top:"110",
+                 avg:"平均分數", stamp:"班平均", topLabel:"110 分人數",
+                 countLabel:"統計人數", sub:n=>`統計 ${n} 人` }
+};
+function quizMeta(q){
+  return QUIZ_META[q] || { tab:`${q} 小考`, title:`${q} 小考`, dist:"分數級距", top:"100",
+                           avg:"平均分數", stamp:"班平均", topLabel:"滿分人數",
+                           countLabel:"實際應試人數", sub:n=>`已收 ${n} 份` };
+}
 
 const RAW = {
   "506": { "1-1": { average: 76.33, distribution: [
@@ -171,6 +188,18 @@ const RAW = {
   "1-2": { average: 83.58, distribution: [
     { label:"70以下", count:3 },{ label:"70-79", count:3 },{ label:"80-89", count:7 },
     { label:"90-99", count:10 },{ label:"100", count:1 }
+  ]},
+  "1-3": { average: 90.38, distribution: [
+    { label:"70以下", count:2 },{ label:"70-79", count:0 },{ label:"80-89", count:4 },
+    { label:"90-99", count:14 },{ label:"100", count:4 }
+  ]},
+  "1-3-bonus": { average: 5.96, distribution: [
+    { label:"7以下", count:14 },{ label:"8", count:3 },{ label:"9", count:0 },
+    { label:"10", count:6 }
+  ]},
+  "1-3-total": { average: 96.08, distribution: [
+    { label:"80以下", count:2 },{ label:"80-89", count:0 },{ label:"90-99", count:9 },
+    { label:"100-109", count:10 },{ label:"110", count:3 }
   ]} },
   "507": { "1-1": { average: 77.84, distribution: [
     { label:"70以下", count:8 },{ label:"70-79", count:3 },{ label:"80-89", count:6 },
@@ -179,6 +208,18 @@ const RAW = {
   "1-2": { average: 84.72, distribution: [
     { label:"70以下", count:2 },{ label:"70-79", count:5 },{ label:"80-89", count:8 },
     { label:"90-99", count:7 },{ label:"100", count:3 }
+  ]},
+  "1-3": { average: 92.33, distribution: [
+    { label:"70以下", count:1 },{ label:"70-79", count:1 },{ label:"80-89", count:2 },
+    { label:"90-99", count:10 },{ label:"100", count:10 }
+  ]},
+  "1-3-bonus": { average: 7.82, distribution: [
+    { label:"7以下", count:7 },{ label:"8", count:4 },{ label:"9", count:2 },
+    { label:"10", count:9 }
+  ]},
+  "1-3-total": { average: 99.5, distribution: [
+    { label:"80以下", count:1 },{ label:"80-89", count:1 },{ label:"90-99", count:6 },
+    { label:"100-109", count:12 },{ label:"110", count:4 }
   ]} },
   "508": { "1-1": { average: 84.24, distribution: [
     { label:"70以下", count:2 },{ label:"70-79", count:5 },{ label:"80-89", count:7 },
@@ -187,6 +228,18 @@ const RAW = {
   "1-2": { average: 87.04, distribution: [
     { label:"70以下", count:2 },{ label:"70-79", count:4 },{ label:"80-89", count:6 },
     { label:"90-99", count:11 },{ label:"100", count:2 }
+  ]},
+  "1-3": { average: 96, distribution: [
+    { label:"70以下", count:0 },{ label:"70-79", count:0 },{ label:"80-89", count:2 },
+    { label:"90-99", count:14 },{ label:"100", count:9 }
+  ]},
+  "1-3-bonus": { average: 7.76, distribution: [
+    { label:"7以下", count:6 },{ label:"8", count:7 },{ label:"9", count:1 },
+    { label:"10", count:11 }
+  ]},
+  "1-3-total": { average: 103.76, distribution: [
+    { label:"80以下", count:0 },{ label:"80-89", count:0 },{ label:"90-99", count:5 },
+    { label:"100-109", count:16 },{ label:"110", count:4 }
   ]} },
   "509": { "1-1": { average: 80.88, distribution: [
     { label:"70以下", count:7 },{ label:"70-79", count:3 },{ label:"80-89", count:6 },
@@ -195,6 +248,18 @@ const RAW = {
   "1-2": { average: 86.4, distribution: [
     { label:"70以下", count:2 },{ label:"70-79", count:2 },{ label:"80-89", count:9 },
     { label:"90-99", count:8 },{ label:"100", count:4 }
+  ]},
+  "1-3": { average: 94.88, distribution: [
+    { label:"70以下", count:0 },{ label:"70-79", count:0 },{ label:"80-89", count:6 },
+    { label:"90-99", count:12 },{ label:"100", count:7 }
+  ]},
+  "1-3-bonus": { average: 6.08, distribution: [
+    { label:"7以下", count:16 },{ label:"8", count:3 },{ label:"9", count:1 },
+    { label:"10", count:5 }
+  ]},
+  "1-3-total": { average: 100.96, distribution: [
+    { label:"80以下", count:0 },{ label:"80-89", count:3 },{ label:"90-99", count:6 },
+    { label:"100-109", count:14 },{ label:"110", count:2 }
   ]} },
   "510": { "1-1": { average: 76.37, distribution: [
     { label:"70以下", count:7 },{ label:"70-79", count:7 },{ label:"80-89", count:7 },
@@ -203,6 +268,18 @@ const RAW = {
   "1-2": { average: 83.85, distribution: [
     { label:"70以下", count:3 },{ label:"70-79", count:5 },{ label:"80-89", count:8 },
     { label:"90-99", count:10 },{ label:"100", count:1 }
+  ]},
+  "1-3": { average: 93.16, distribution: [
+    { label:"70以下", count:1 },{ label:"70-79", count:0 },{ label:"80-89", count:4 },
+    { label:"90-99", count:13 },{ label:"100", count:7 }
+  ]},
+  "1-3-bonus": { average: 6.96, distribution: [
+    { label:"7以下", count:10 },{ label:"8", count:9 },{ label:"9", count:2 },
+    { label:"10", count:2 }
+  ]},
+  "1-3-total": { average: 99.56, distribution: [
+    { label:"80以下", count:1 },{ label:"80-89", count:2 },{ label:"90-99", count:5 },
+    { label:"100-109", count:16 },{ label:"110", count:1 }
   ]} }
 };
 
@@ -241,7 +318,7 @@ function renderQuizTabs(){
   if (!current){ el.innerHTML = ""; return; }
   el.innerHTML = QUIZZES.map(q => {
     const ready = !!RAW[current][q];
-    return `<button data-q="${q}" class="${q===currentQuiz?'active':''}">${q} 小考${ready?'':'（尚無）'}</button>`;
+    return `<button data-q="${q}" class="${q===currentQuiz?'active':''}">${quizMeta(q).tab}${ready?'':'（尚無）'}</button>`;
   }).join("");
   el.querySelectorAll("button").forEach(b=>{
     b.addEventListener("click", ()=>{ currentQuiz = b.dataset.q; renderQuizTabs(); renderPanel(); });
@@ -275,7 +352,7 @@ function chartConfig(distribution){
 function tableHtml(distribution){
   return `
     <table>
-      <caption>${current} 班｜${currentQuiz} 小考｜分數級距統計</caption>
+      <caption>${current} 班｜${quizMeta(currentQuiz).title}｜${quizMeta(currentQuiz).dist}統計</caption>
       <thead><tr><th>級距</th><th>人數</th></tr></thead>
       <tbody>
         ${[...distribution].reverse().map(x => `
@@ -306,7 +383,7 @@ function renderPanel(){
 
   if (!d){
     panelEl.innerHTML = `
-      <div class="panel-head"><div><h2>${current} 班</h2><div class="sub">${currentQuiz} 小考｜尚未登錄成績</div></div></div>
+      <div class="panel-head"><div><h2>${current} 班</h2><div class="sub">${quizMeta(currentQuiz).title}｜尚未登錄成績</div></div></div>
       <div class="empty">
         <div class="icon">?</div>
         <p>這次小考還沒有成績資料。</p>
@@ -317,25 +394,26 @@ function renderPanel(){
   }
 
   const submittedCount = d.distribution.reduce((sum, x) => sum + x.count, 0);
-  const topCount = d.distribution.find(x => x.label === "100")?.count ?? 0;
+  const m = quizMeta(currentQuiz);
+  const topCount = d.distribution.find(x => x.label === m.top)?.count ?? 0;
   const avgDisplay = d.average.toFixed(1);
 
   panelEl.innerHTML = `
     <div class="panel-head">
       <div>
         <h2>${current} 班</h2>
-        <div class="sub">${currentQuiz} 小考 · 已收 ${submittedCount} 份</div>
+        <div class="sub">${m.title} · ${m.sub(submittedCount)}</div>
       </div>
       <div class="grade-stamp">
         <div class="num">${avgDisplay}</div>
-        <div class="lbl">班平均</div>
+        <div class="lbl">${m.stamp}</div>
       </div>
     </div>
 
     <div class="stat-row">
-      <div class="stat-box"><div class="v">${avgDisplay}</div><div class="k">平均分數</div></div>
-      <div class="stat-box"><div class="v">${topCount}</div><div class="k">滿分人數</div></div>
-      <div class="stat-box"><div class="v">${submittedCount}</div><div class="k">實際應試人數</div></div>
+      <div class="stat-box"><div class="v">${avgDisplay}</div><div class="k">${m.avg}</div></div>
+      <div class="stat-box"><div class="v">${topCount}</div><div class="k">${m.topLabel}</div></div>
+      <div class="stat-box"><div class="v">${submittedCount}</div><div class="k">${m.countLabel}</div></div>
     </div>
 
     <div class="table-box" id="tableWrap">
@@ -344,7 +422,7 @@ function renderPanel(){
     </div>
 
     <div class="chart-box" id="chartWrap">
-      <h3>${currentQuiz} 小考｜分數級距人數分布</h3>
+      <h3>${m.title}｜${m.dist}人數分布</h3>
       <div class="canvas-wrap"><canvas id="distChart"></canvas></div>
       <div class="zoom-hint">點擊圖表放大檢視</div>
     </div>
@@ -364,14 +442,14 @@ function openModalBase(title){
 }
 
 function openModalChart(distribution){
-  openModalBase(`${current} 班｜${currentQuiz} 小考｜分數級距人數分布`);
+  openModalBase(`${current} 班｜${quizMeta(currentQuiz).title}｜${quizMeta(currentQuiz).dist}人數分布`);
   document.getElementById("modalBody").innerHTML = `<div class="canvas-wrap-lg"><canvas id="distChartLg"></canvas></div>`;
   const ctxLg = document.getElementById("distChartLg").getContext("2d");
   modalChart = new Chart(ctxLg, chartConfig(distribution));
 }
 
 function openModalTable(distribution){
-  openModalBase(`${current} 班｜${currentQuiz} 小考｜分數級距統計`);
+  openModalBase(`${current} 班｜${quizMeta(currentQuiz).title}｜${quizMeta(currentQuiz).dist}統計`);
   document.getElementById("modalBody").innerHTML = tableHtml(distribution).replace(/<caption>.*?<\/caption>/, "");
 }
 
