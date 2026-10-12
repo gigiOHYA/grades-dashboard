@@ -168,14 +168,14 @@ const QUIZZES = ["1-1","1-2","1-3","1-3-bonus","1-3-total","2-1","2-2"];
 // Display wording per tab. Plain quizzes (1-1, 1-2, 1-3, ...) use the defaults;
 // 加分 and 總分 have their own buckets, so they carry their own wording and
 // the label of the "top" bucket that the 滿分 stat counts.
-// 基本資料不完整：試算表儲存格標 z 的人數（該格成績不列入級距與平均）
+// 基本資料不完整：試算表儲存格標 z 的人數（成績照常計入級距與平均）
 const INC = { key:"incomplete", label:"基本資料不完整", warn:true };
 const QUIZ_META = {
   "1-3": { tab:"1-3 小考", title:"1-3 小考", dist:"分數級距", top:"100", avg:"平均分數", stamp:"班平均",
            topLabel:"滿分人數", extras:[INC], countLabel:"實際應試人數", sub:n=>`已收 ${n} 份` },
   "1-3-bonus": { tab:"1-3 加分", title:"1-3 加分", dist:"加分級距", top:"10",
                  avg:"平均加分", stamp:"平均加分", topLabel:"加滿 10 分人數",
-                 extras:[{ key:"blank", label:"交白卷", warn:true }, INC],   // 交白卷：加分欄標記 x，不列入級距與平均
+                 extras:[{ key:"blank", label:"交白卷", warn:true }, INC],   // 交白卷：加分欄標記 x，視為 0 分計入級距與平均；'-' 為缺考，不列入
                  countLabel:"統計人數", sub:n=>`統計 ${n} 人` },
   "1-3-total": { tab:"1-3 總分", title:"1-3 總分", dist:"總分級距", top:"110",
                  avg:"平均分數", stamp:"班平均", topLabel:"110 分人數",
@@ -197,14 +197,14 @@ const RAW = {
     { label:"70以下", count:3 },{ label:"70-79", count:3 },{ label:"80-89", count:7 },
     { label:"90-99", count:10 },{ label:"100", count:1 }
   ]},
-  "1-3": { average: 90.04, incomplete: 1, distribution: [
-    { label:"70以下", count:2 }, { label:"70-79", count:0 }, { label:"80-89", count:4 }, { label:"90-99", count:13 }, { label:"100", count:4 }
+  "1-3": { average: 90.38, incomplete: 1, distribution: [
+    { label:"70以下", count:2 }, { label:"70-79", count:0 }, { label:"80-89", count:4 }, { label:"90-99", count:14 }, { label:"100", count:4 }
   ]},
-  "1-3-bonus": { average: 6.05, blank: 1, incomplete: 1, distribution: [
-    { label:"7以下", count:13 }, { label:"8", count:3 }, { label:"9", count:0 }, { label:"10", count:6 }
+  "1-3-bonus": { average: 5.71, blank: 1, incomplete: 1, distribution: [
+    { label:"7以下", count:15 }, { label:"8", count:3 }, { label:"9", count:0 }, { label:"10", count:6 }
   ]},
-  "1-3-total": { average: 95.83, incomplete: 1, distribution: [
-    { label:"80以下", count:2 }, { label:"80-89", count:0 }, { label:"90-99", count:9 }, { label:"100-109", count:9 }, { label:"110", count:3 }
+  "1-3-total": { average: 96.08, incomplete: 1, distribution: [
+    { label:"80以下", count:2 }, { label:"80-89", count:0 }, { label:"90-99", count:9 }, { label:"100-109", count:10 }, { label:"110", count:3 }
   ]} },
   "507": { "1-1": { average: 77.84, distribution: [
     { label:"70以下", count:8 },{ label:"70-79", count:3 },{ label:"80-89", count:6 },
@@ -214,14 +214,14 @@ const RAW = {
     { label:"70以下", count:2 },{ label:"70-79", count:5 },{ label:"80-89", count:8 },
     { label:"90-99", count:7 },{ label:"100", count:3 }
   ]},
-  "1-3": { average: 92.55, incomplete: 3, distribution: [
-    { label:"70以下", count:1 }, { label:"70-79", count:1 }, { label:"80-89", count:1 }, { label:"90-99", count:9 }, { label:"100", count:10 }
+  "1-3": { average: 92.33, incomplete: 3, distribution: [
+    { label:"70以下", count:1 }, { label:"70-79", count:1 }, { label:"80-89", count:2 }, { label:"90-99", count:10 }, { label:"100", count:10 }
   ]},
-  "1-3-bonus": { average: 8.26, blank: 2, incomplete: 3, distribution: [
-    { label:"7以下", count:5 }, { label:"8", count:3 }, { label:"9", count:2 }, { label:"10", count:9 }
+  "1-3-bonus": { average: 7.17, blank: 2, incomplete: 3, distribution: [
+    { label:"7以下", count:9 }, { label:"8", count:4 }, { label:"9", count:2 }, { label:"10", count:9 }
   ]},
-  "1-3-total": { average: 100.14, incomplete: 3, distribution: [
-    { label:"80以下", count:1 }, { label:"80-89", count:1 }, { label:"90-99", count:3 }, { label:"100-109", count:12 }, { label:"110", count:4 }
+  "1-3-total": { average: 99.5, incomplete: 3, distribution: [
+    { label:"80以下", count:1 }, { label:"80-89", count:1 }, { label:"90-99", count:6 }, { label:"100-109", count:12 }, { label:"110", count:4 }
   ]} },
   "508": { "1-1": { average: 84.24, distribution: [
     { label:"70以下", count:2 },{ label:"70-79", count:5 },{ label:"80-89", count:7 },
@@ -231,17 +231,14 @@ const RAW = {
     { label:"70以下", count:2 },{ label:"70-79", count:4 },{ label:"80-89", count:6 },
     { label:"90-99", count:11 },{ label:"100", count:2 }
   ]},
-  "1-3": { average: 96, distribution: [
-    { label:"70以下", count:0 },{ label:"70-79", count:0 },{ label:"80-89", count:2 },
-    { label:"90-99", count:14 },{ label:"100", count:9 }
+  "1-3": { average: 96.0, distribution: [
+    { label:"70以下", count:0 }, { label:"70-79", count:0 }, { label:"80-89", count:2 }, { label:"90-99", count:14 }, { label:"100", count:9 }
   ]},
   "1-3-bonus": { average: 7.76, blank: 0, distribution: [
-    { label:"7以下", count:6 },{ label:"8", count:7 },{ label:"9", count:1 },
-    { label:"10", count:11 }
+    { label:"7以下", count:6 }, { label:"8", count:7 }, { label:"9", count:1 }, { label:"10", count:11 }
   ]},
   "1-3-total": { average: 103.76, distribution: [
-    { label:"80以下", count:0 },{ label:"80-89", count:0 },{ label:"90-99", count:5 },
-    { label:"100-109", count:16 },{ label:"110", count:4 }
+    { label:"80以下", count:0 }, { label:"80-89", count:0 }, { label:"90-99", count:5 }, { label:"100-109", count:16 }, { label:"110", count:4 }
   ]} },
   "509": { "1-1": { average: 80.88, distribution: [
     { label:"70以下", count:7 },{ label:"70-79", count:3 },{ label:"80-89", count:6 },
@@ -252,16 +249,13 @@ const RAW = {
     { label:"90-99", count:8 },{ label:"100", count:4 }
   ]},
   "1-3": { average: 94.88, distribution: [
-    { label:"70以下", count:0 },{ label:"70-79", count:0 },{ label:"80-89", count:6 },
-    { label:"90-99", count:12 },{ label:"100", count:7 }
+    { label:"70以下", count:0 }, { label:"70-79", count:0 }, { label:"80-89", count:6 }, { label:"90-99", count:12 }, { label:"100", count:7 }
   ]},
   "1-3-bonus": { average: 6.08, blank: 0, distribution: [
-    { label:"7以下", count:16 },{ label:"8", count:3 },{ label:"9", count:1 },
-    { label:"10", count:5 }
+    { label:"7以下", count:16 }, { label:"8", count:3 }, { label:"9", count:1 }, { label:"10", count:5 }
   ]},
   "1-3-total": { average: 100.96, distribution: [
-    { label:"80以下", count:0 },{ label:"80-89", count:3 },{ label:"90-99", count:6 },
-    { label:"100-109", count:14 },{ label:"110", count:2 }
+    { label:"80以下", count:0 }, { label:"80-89", count:3 }, { label:"90-99", count:6 }, { label:"100-109", count:14 }, { label:"110", count:2 }
   ]} },
   "510": { "1-1": { average: 76.37, distribution: [
     { label:"70以下", count:7 },{ label:"70-79", count:7 },{ label:"80-89", count:7 },
@@ -272,16 +266,13 @@ const RAW = {
     { label:"90-99", count:10 },{ label:"100", count:1 }
   ]},
   "1-3": { average: 93.16, distribution: [
-    { label:"70以下", count:1 },{ label:"70-79", count:0 },{ label:"80-89", count:4 },
-    { label:"90-99", count:13 },{ label:"100", count:7 }
+    { label:"70以下", count:1 }, { label:"70-79", count:0 }, { label:"80-89", count:4 }, { label:"90-99", count:13 }, { label:"100", count:7 }
   ]},
-  "1-3-bonus": { average: 6.96, blank: 2, distribution: [
-    { label:"7以下", count:10 },{ label:"8", count:9 },{ label:"9", count:2 },
-    { label:"10", count:2 }
+  "1-3-bonus": { average: 6.4, blank: 2, distribution: [
+    { label:"7以下", count:12 }, { label:"8", count:9 }, { label:"9", count:2 }, { label:"10", count:2 }
   ]},
   "1-3-total": { average: 99.56, distribution: [
-    { label:"80以下", count:1 },{ label:"80-89", count:2 },{ label:"90-99", count:5 },
-    { label:"100-109", count:16 },{ label:"110", count:1 }
+    { label:"80以下", count:1 }, { label:"80-89", count:2 }, { label:"90-99", count:5 }, { label:"100-109", count:16 }, { label:"110", count:1 }
   ]} }
 };
 
