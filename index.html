@@ -190,12 +190,10 @@ function quizMeta(q){
 
 const RAW = {
   "506": { "1-1": { average: 76.33, distribution: [
-    { label:"70以下", count:6 },{ label:"70-79", count:5 },{ label:"80-89", count:9 },
-    { label:"90-99", count:4 },{ label:"100", count:0 }
+    { label:"70以下", count:6 }, { label:"70-79", count:5 }, { label:"80-89", count:9 }, { label:"90-99", count:4 }, { label:"100", count:0 }
   ]},
   "1-2": { average: 83.58, distribution: [
-    { label:"70以下", count:3 },{ label:"70-79", count:3 },{ label:"80-89", count:7 },
-    { label:"90-99", count:10 },{ label:"100", count:1 }
+    { label:"70以下", count:3 }, { label:"70-79", count:3 }, { label:"80-89", count:7 }, { label:"90-99", count:10 }, { label:"100", count:1 }
   ]},
   "1-3": { average: 90.38, incomplete: 1, distribution: [
     { label:"70以下", count:2 }, { label:"70-79", count:0 }, { label:"80-89", count:4 }, { label:"90-99", count:14 }, { label:"100", count:4 }
@@ -205,74 +203,81 @@ const RAW = {
   ]},
   "1-3-total": { average: 96.08, incomplete: 1, distribution: [
     { label:"80以下", count:2 }, { label:"80-89", count:0 }, { label:"90-99", count:9 }, { label:"100-109", count:10 }, { label:"110", count:3 }
+  ]},
+  "2-1": { average: 82.78, distribution: [
+    { label:"70以下", count:4 }, { label:"70-79", count:6 }, { label:"80-89", count:4 }, { label:"90-99", count:6 }, { label:"100", count:3 }
   ]} },
   "507": { "1-1": { average: 77.84, distribution: [
-    { label:"70以下", count:8 },{ label:"70-79", count:3 },{ label:"80-89", count:6 },
-    { label:"90-99", count:8 },{ label:"100", count:0 }
+    { label:"70以下", count:8 }, { label:"70-79", count:3 }, { label:"80-89", count:6 }, { label:"90-99", count:8 }, { label:"100", count:0 }
   ]},
   "1-2": { average: 84.72, distribution: [
-    { label:"70以下", count:2 },{ label:"70-79", count:5 },{ label:"80-89", count:8 },
-    { label:"90-99", count:7 },{ label:"100", count:3 }
+    { label:"70以下", count:2 }, { label:"70-79", count:5 }, { label:"80-89", count:8 }, { label:"90-99", count:7 }, { label:"100", count:3 }
   ]},
-  "1-3": { average: 92.33, incomplete: 3, distribution: [
-    { label:"70以下", count:1 }, { label:"70-79", count:1 }, { label:"80-89", count:2 }, { label:"90-99", count:10 }, { label:"100", count:10 }
+  "1-3": { average: 92.48, incomplete: 3, distribution: [
+    { label:"70以下", count:1 }, { label:"70-79", count:1 }, { label:"80-89", count:2 }, { label:"90-99", count:11 }, { label:"100", count:10 }
   ]},
-  "1-3-bonus": { average: 7.17, blank: 2, incomplete: 3, distribution: [
-    { label:"7以下", count:9 }, { label:"8", count:4 }, { label:"9", count:2 }, { label:"10", count:9 }
+  "1-3-bonus": { average: 7.28, blank: 2, incomplete: 3, distribution: [
+    { label:"7以下", count:9 }, { label:"8", count:4 }, { label:"9", count:2 }, { label:"10", count:10 }
   ]},
-  "1-3-total": { average: 99.5, incomplete: 3, distribution: [
-    { label:"80以下", count:1 }, { label:"80-89", count:1 }, { label:"90-99", count:6 }, { label:"100-109", count:12 }, { label:"110", count:4 }
+  "1-3-total": { average: 99.76, incomplete: 3, distribution: [
+    { label:"80以下", count:1 }, { label:"80-89", count:1 }, { label:"90-99", count:6 }, { label:"100-109", count:13 }, { label:"110", count:4 }
+  ]},
+  "2-1": { average: 82.7, distribution: [
+    { label:"70以下", count:5 }, { label:"70-79", count:4 }, { label:"80-89", count:8 }, { label:"90-99", count:7 }, { label:"100", count:1 }
   ]} },
   "508": { "1-1": { average: 84.24, distribution: [
-    { label:"70以下", count:2 },{ label:"70-79", count:5 },{ label:"80-89", count:7 },
-    { label:"90-99", count:9 },{ label:"100", count:2 }
+    { label:"70以下", count:2 }, { label:"70-79", count:5 }, { label:"80-89", count:7 }, { label:"90-99", count:9 }, { label:"100", count:2 }
   ]},
   "1-2": { average: 87.04, distribution: [
-    { label:"70以下", count:2 },{ label:"70-79", count:4 },{ label:"80-89", count:6 },
-    { label:"90-99", count:11 },{ label:"100", count:2 }
+    { label:"70以下", count:2 }, { label:"70-79", count:4 }, { label:"80-89", count:6 }, { label:"90-99", count:11 }, { label:"100", count:2 }
   ]},
   "1-3": { average: 96.0, distribution: [
     { label:"70以下", count:0 }, { label:"70-79", count:0 }, { label:"80-89", count:2 }, { label:"90-99", count:14 }, { label:"100", count:9 }
   ]},
-  "1-3-bonus": { average: 7.76, blank: 0, distribution: [
+  "1-3-bonus": { average: 7.76, distribution: [
     { label:"7以下", count:6 }, { label:"8", count:7 }, { label:"9", count:1 }, { label:"10", count:11 }
   ]},
   "1-3-total": { average: 103.76, distribution: [
     { label:"80以下", count:0 }, { label:"80-89", count:0 }, { label:"90-99", count:5 }, { label:"100-109", count:16 }, { label:"110", count:4 }
+  ]},
+  "2-1": { average: 82.83, distribution: [
+    { label:"70以下", count:5 }, { label:"70-79", count:5 }, { label:"80-89", count:4 }, { label:"90-99", count:5 }, { label:"100", count:5 }
   ]} },
   "509": { "1-1": { average: 80.88, distribution: [
-    { label:"70以下", count:7 },{ label:"70-79", count:3 },{ label:"80-89", count:6 },
-    { label:"90-99", count:7 },{ label:"100", count:2 }
+    { label:"70以下", count:7 }, { label:"70-79", count:3 }, { label:"80-89", count:6 }, { label:"90-99", count:7 }, { label:"100", count:2 }
   ]},
   "1-2": { average: 86.4, distribution: [
-    { label:"70以下", count:2 },{ label:"70-79", count:2 },{ label:"80-89", count:9 },
-    { label:"90-99", count:8 },{ label:"100", count:4 }
+    { label:"70以下", count:2 }, { label:"70-79", count:2 }, { label:"80-89", count:9 }, { label:"90-99", count:8 }, { label:"100", count:4 }
   ]},
   "1-3": { average: 94.88, distribution: [
     { label:"70以下", count:0 }, { label:"70-79", count:0 }, { label:"80-89", count:6 }, { label:"90-99", count:12 }, { label:"100", count:7 }
   ]},
-  "1-3-bonus": { average: 6.08, blank: 0, distribution: [
+  "1-3-bonus": { average: 6.08, distribution: [
     { label:"7以下", count:16 }, { label:"8", count:3 }, { label:"9", count:1 }, { label:"10", count:5 }
   ]},
   "1-3-total": { average: 100.96, distribution: [
     { label:"80以下", count:0 }, { label:"80-89", count:3 }, { label:"90-99", count:6 }, { label:"100-109", count:14 }, { label:"110", count:2 }
+  ]},
+  "2-1": { average: 77.14, distribution: [
+    { label:"70以下", count:10 }, { label:"70-79", count:5 }, { label:"80-89", count:2 }, { label:"90-99", count:6 }, { label:"100", count:2 }
   ]} },
   "510": { "1-1": { average: 76.37, distribution: [
-    { label:"70以下", count:7 },{ label:"70-79", count:7 },{ label:"80-89", count:7 },
-    { label:"90-99", count:5 },{ label:"100", count:1 }
+    { label:"70以下", count:7 }, { label:"70-79", count:7 }, { label:"80-89", count:7 }, { label:"90-99", count:5 }, { label:"100", count:1 }
   ]},
-  "1-2": { average: 83.85, distribution: [
-    { label:"70以下", count:3 },{ label:"70-79", count:5 },{ label:"80-89", count:8 },
-    { label:"90-99", count:10 },{ label:"100", count:1 }
+  "1-2": { average: 83.7, distribution: [
+    { label:"70以下", count:3 }, { label:"70-79", count:5 }, { label:"80-89", count:9 }, { label:"90-99", count:9 }, { label:"100", count:1 }
   ]},
   "1-3": { average: 92.85, distribution: [
     { label:"70以下", count:1 }, { label:"70-79", count:0 }, { label:"80-89", count:5 }, { label:"90-99", count:14 }, { label:"100", count:7 }
   ]},
-  "1-3-bonus": { average: 6.56, blank: 2, distribution: [
-    { label:"7以下", count:13 }, { label:"8", count:9 }, { label:"9", count:2 }, { label:"10", count:3 }
+  "1-3-bonus": { average: 6.59, blank: 2, distribution: [
+    { label:"7以下", count:12 }, { label:"8", count:10 }, { label:"9", count:2 }, { label:"10", count:3 }
   ]},
-  "1-3-total": { average: 99.41, distribution: [
+  "1-3-total": { average: 99.44, distribution: [
     { label:"80以下", count:1 }, { label:"80-89", count:2 }, { label:"90-99", count:6 }, { label:"100-109", count:17 }, { label:"110", count:1 }
+  ]},
+  "2-1": { average: 78.67, distribution: [
+    { label:"70以下", count:11 }, { label:"70-79", count:3 }, { label:"80-89", count:2 }, { label:"90-99", count:7 }, { label:"100", count:4 }
   ]} }
 };
 
