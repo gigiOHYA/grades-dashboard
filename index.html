@@ -163,7 +163,7 @@
 // distribution arrays are ordered low → high (70以下 first, 100 last) —
 // the chart reads them left-to-right in this order; the table shows
 // high-to-low (reversed) for readability.
-const QUIZZES = ["1-1","1-2","1-3","1-3-bonus","1-3-total","2-1","2-2"];
+const QUIZZES = ["1-1","1-2","1-3","1-3-bonus","1-3-total","2-1","review","2-2"];
 
 // Display wording per tab. Plain quizzes (1-1, 1-2, 1-3, ...) use the defaults;
 // 加分 and 總分 have their own buckets, so they carry their own wording and
@@ -177,6 +177,9 @@ const QUIZ_META = {
                  avg:"平均加分", stamp:"平均加分", topLabel:"加滿 10 分人數",
                  extras:[{ key:"blank", label:"交白卷", warn:true }, INC],   // 交白卷：加分欄標記 x，視為 0 分計入級距與平均；'-' 為缺考，不列入
                  countLabel:"統計人數", sub:n=>`統計 ${n} 人` },
+  "review": { tab:"複習考", title:"複習考（一、二）", dist:"總分級距", top:"110",
+              avg:"平均分數", stamp:"班平均", topLabel:"110 分人數",
+              countLabel:"統計人數", sub:n=>`統計 ${n} 人` },
   "1-3-total": { tab:"1-3 總分", title:"1-3 總分", dist:"總分級距", top:"110",
                  avg:"平均分數", stamp:"班平均", topLabel:"110 分人數",
                  extras:[INC],
@@ -206,6 +209,9 @@ const RAW = {
   ]},
   "2-1": { average: 83.91, distribution: [
     { label:"70以下", count:4 }, { label:"70-79", count:5 }, { label:"80-89", count:5 }, { label:"90-99", count:6 }, { label:"100", count:3 }
+  ]},
+  "review": { average: 91.65, distribution: [
+    { label:"80以下", count:5 }, { label:"80-89", count:4 }, { label:"90-99", count:6 }, { label:"100-109", count:8 }, { label:"110", count:1 }
   ]} },
   "507": { "1-1": { average: 77.84, distribution: [
     { label:"70以下", count:8 }, { label:"70-79", count:3 }, { label:"80-89", count:6 }, { label:"90-99", count:8 }, { label:"100", count:0 }
@@ -224,6 +230,9 @@ const RAW = {
   ]},
   "2-1": { average: 83.5, distribution: [
     { label:"70以下", count:5 }, { label:"70-79", count:4 }, { label:"80-89", count:7 }, { label:"90-99", count:8 }, { label:"100", count:1 }
+  ]},
+  "review": { average: 99.98, distribution: [
+    { label:"80以下", count:1 }, { label:"80-89", count:3 }, { label:"90-99", count:5 }, { label:"100-109", count:14 }, { label:"110", count:2 }
   ]} },
   "508": { "1-1": { average: 84.24, distribution: [
     { label:"70以下", count:2 }, { label:"70-79", count:5 }, { label:"80-89", count:7 }, { label:"90-99", count:9 }, { label:"100", count:2 }
@@ -278,6 +287,9 @@ const RAW = {
   ]},
   "2-1": { average: 79.89, distribution: [
     { label:"70以下", count:7 }, { label:"70-79", count:6 }, { label:"80-89", count:3 }, { label:"90-99", count:7 }, { label:"100", count:4 }
+  ]},
+  "review": { average: 94.35, distribution: [
+    { label:"80以下", count:4 }, { label:"80-89", count:2 }, { label:"90-99", count:8 }, { label:"100-109", count:11 }, { label:"110", count:2 }
   ]} }
 };
 
